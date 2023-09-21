@@ -1,0 +1,19 @@
+{
+  "tabWidth": 2,
+  "overrides": [
+    {
+      "files": ["*.html", "*.scss"],
+      "options": {
+        "tabWidth": 4,
+        "printWidth": 180
+      }
+    },
+    {
+      "files": "*.ts",
+      "options": {
+        "printWidth": 180,
+        "singleQuote": true
+      }
+    }
+  ]
+}

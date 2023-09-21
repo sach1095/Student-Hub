@@ -1,0 +1,10 @@
+/* -------------------------------- */
+/* ---- Responsive Breakpoints ---- */
+/* -------------------------------- */
+
+@mixin for-desktop {
+	@media only screen and (min-width: 431px) { @content; }
+}
+@mixin for-mobile {
+	@media only screen and (max-width: 430px) { @content; }
+}

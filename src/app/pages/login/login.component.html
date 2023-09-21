@@ -1,0 +1,7 @@
+<div id="body-pages">
+    <div class="Login-form">
+        <button *ngIf="!showSpinner" mat-fab extended color="primary" (click)="ProcessLogin()">Login</button>
+        <mat-spinner id="spinner" *ngIf="showSpinner"></mat-spinner>
+        <mat-error *ngIf="showError">{{ messageError }}</mat-error>
+    </div>
+</div>

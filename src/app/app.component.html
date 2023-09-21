@@ -1,0 +1,9 @@
+<ng-container *ngIf="currentUrl.includes('/login'); else MainContent">
+    <router-outlet></router-outlet>
+</ng-container>
+
+<ng-template #MainContent>
+    <app-side-nav>
+        <router-outlet></router-outlet>
+    </app-side-nav>
+</ng-template>

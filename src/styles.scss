@@ -1,0 +1,109 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$Student-Hub-primary: mat.define-palette(mat.$blue-palette);
+$Student-Hub-accent: mat.define-palette(mat.$blue-palette, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$Student-Hub-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$Student-Hub-theme: mat.define-light-theme((
+  color: (
+    primary: $Student-Hub-primary,
+    accent: $Student-Hub-accent,
+    warn: $Student-Hub-warn,
+  )
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($Student-Hub-theme);
+
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; 	margin: 0px; color: whitesmoke ; }
+body { margin: 0px; font-family: Roboto, sans-serif;}
+
+html{
+  background-image: url("../src/assets/img/image_back.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+:root {
+  /* --- colors */
+  --Student-Hub-primary: #2E2431;
+  --Student-Hub-secondary: #421452;
+  --Student-Hub-btn: #5c266d;
+  --Student-Hub-nav-bar : #431452;
+  --Student-Hub-nav-bar__border : #320f3d;
+  --Student-Hub-footer : #333333;
+  --Student-Hub-footer__border : #4f4f4f;
+}
+
+#body-pages{
+  margin: 15px;
+  height: 85%;
+}
+
+#spinner{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: auto !important;
+}
+
+button{
+  background-color: var(--Student-Hub-btn) !important;
+  color: #6E6093;
+  &hover{
+    background-color: #2E2431 !important;
+  }
+}
+
+a {
+	text-decoration: none;
+	color: whitesmoke;
+	&:link {
+		color: whitesmoke;
+	}
+	&​:active {
+		color: whitesmoke;
+	}
+	&:visited {
+		color: whitesmoke;
+	}
+	&:hover {
+		color: whitesmoke;
+	}
+}
+
+.dot-button{
+  background: #e0dcdc !important;
+}
+
+.dot.active {
+  background: var(--Student-Hub-btn) !important;
+}
+
+.mat-mdc-menu-content{
+  background-color: var(--Student-Hub-primary) !important;
+  padding: 0 !important;
+}
+.mdc-list-item__primary-text{
+  color: whitesmoke !important;
+}

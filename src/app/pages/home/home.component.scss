@@ -1,0 +1,32 @@
+button{
+  font-size: 19px;
+}
+
+.div-tiny {
+  img {
+    overflow-clip-margin: content-box;
+    overflow: clip;
+}
+  text-align: center;
+}
+.slider-item{
+  width: 362px;
+  height: 187px;
+  background-color: var(--Student-Hub-secondary);
+  img{
+    overflow-clip-margin: content-box;
+    overflow: clip;
+  }
+}
+
+.container-slider{
+  div{
+    width: 80%;
+    height: 20%;
+  }
+  border: 2px solid white;
+}
+
+.hidden {
+  display: none;
+}

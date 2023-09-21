@@ -1,0 +1,65 @@
+<div class="navbar-mobile" *ngIf="!isDesktop()">
+    <mat-sidenav-container>
+        <mat-sidenav class="navbar-mobile-content" #sidenav mode="over" [(opened)]="isMenuOpen" (click)="onSidenavClick()">
+            <div class="navbar-mobile-content-user">
+                <p class="navbar-mobile-content-user__name" style="margin-bottom: 2px">{{ user?.login }}</p>
+                <p class="navbar-mobile-content-user__type" style="margin-top: 0px">{{ user?.type }}</p>
+            </div>
+
+            <ng-container>
+                <ul class="navbar-mobile-content-links">
+                    <li><a [routerLink]="'/home'" routerLinkActive="active-link">Accueil</a></li>
+                </ul>
+            </ng-container>
+            <ul class="navbar-mobile-content-links">
+                <li><a (click)="logout()">Se déconnecter</a></li>
+            </ul>
+        </mat-sidenav>
+        <mat-sidenav-content>
+            <div class="navbar-mobile-header">
+                <button id="button-menu" mat-icon-button aria-label="Ouvrir le menu utilisateur." class="navbar-mobile-header__btn" (click)="sidenav.toggle()">
+                    <mat-icon>{{ "menu" }}</mat-icon>
+                </button>
+            </div>
+            <ng-container *ngTemplateOutlet="ngContent"> </ng-container>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>
+
+<div class="navbar-desk">
+    <div class="navbar-desk-app-info">
+        <div class="navbar-desk-app-info__title">
+            <p><span>Student-Hub</span></p>
+        </div>
+        <ng-container>
+            <div class="navbar-desk-app-info__links">
+                <ul>
+                    <li><a [routerLink]="'/home'" routerLinkActive="active-link">Accueil</a></li>
+                </ul>
+            </div>
+        </ng-container>
+    </div>
+    <div class="navbar-desk-user-info">
+        <div class="navbar-desk-user-info__username">
+            <div class="navbar-desk-user-info__left">
+                <span class="navbar-desk-user-info__left__login">{{ user?.login }} <br /></span>
+                <span class="navbar-desk-user-info__left__type">{{ user?.type }} </span>
+            </div>
+            <div class="navbar-desk-user-info__rigth" [style.background-image]="'url(' + user?.urlImg + ')'"></div>
+        </div>
+        <div class="navbar-desk-user-info__usermenu">
+            <button id="button-menu" mat-icon-button aria-label="Ouvrir le menu utilisateur." [matMenuTriggerFor]="menu">
+                <mat-icon>menu</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="logout()">Se déconnecter</button>
+            </mat-menu>
+        </div>
+    </div>
+</div>
+
+<ng-container *ngIf="isDesktop()">
+    <ng-container *ngTemplateOutlet="ngContent"> </ng-container>
+</ng-container>
+
+<ng-template #ngContent> <ng-content></ng-content> </ng-template>

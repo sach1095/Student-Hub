@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "student-hub-913a6"
+  },
+  "targets": {
+    "student-hub-913a6": {
+      "hosting": {
+        "Student-Hub": [
+          "student-hub-913a6"
+        ]
+      }
+    }
+  }
+}
