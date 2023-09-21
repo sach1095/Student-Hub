@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { deleteDoc, Firestore, getDoc, setDoc } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { collection, doc, updateDoc } from '@firebase/firestore';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { StrucCall, User } from 'src/app/models/users';
 import { StorageService } from './storage.service';
 
@@ -146,6 +146,21 @@ export class UserService {
       await deleteDoc(usersDocumentReference);
     } catch (error) {
       console.error('User.service : delete : ', error);
+    }
+  }
+
+  public async updateHourOfMonth(month: string) {
+    let user = await firstValueFrom(this.getLoggedUser());
+
+    if (user) {
+      console.log(`updateHourOfMonth = ` + user?.strucCall.lastSaveTime[month].heuresAFaires);
+      const usersDocumentReference = doc(this.firestore, `users/${user.id}`);
+      try {
+        await updateDoc(usersDocumentReference, { ...user });
+      } catch (error) {
+        console.error('User.service : update : ', error);
+      }
+      this.storageService.saveUser(user);
     }
   }
 }

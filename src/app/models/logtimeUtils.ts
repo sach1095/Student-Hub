@@ -10,9 +10,9 @@ export interface strucGauge {
 }
 
 export class LogtimeUtils {
-  static async getLogtime(id: string) {
+  static async getLogtime(id: string, oldTimeTotals: any) {
     let response = await LogtimeUtils.fetchLogtime(id);
-    return this.calculateTimeConnected(response);
+    return this.calculateTimeConnected(response, oldTimeTotals);
   }
 
   static async fetchLogtime(id: string): Promise<any> {
@@ -32,7 +32,7 @@ export class LogtimeUtils {
     return userlogtime;
   }
 
-  static async calculateTimeConnected(response: any) {
+  static async calculateTimeConnected(response: any, oldTimeTotals: any) {
     let timeByMonth: any = {};
     let timeByDay: any = {};
 
@@ -66,6 +66,7 @@ export class LogtimeUtils {
         timeByMonth[yearMonth] = {
           details: {},
           total: '',
+          heuresAFaires: 0, // Initialiser à 0 pour set apres le nombres d'heures a realiser dans le mois
         };
       }
 
@@ -84,6 +85,7 @@ export class LogtimeUtils {
       const totalDuration = Object.values(monthDetails).reduce((total: any, duration: any) => this.addDurations(total, duration), '0h00');
 
       timeByMonth[month].total = totalDuration;
+      if (oldTimeTotals && oldTimeTotals[month].heuresAFaires != 0) timeByMonth[month].heuresAFaires = oldTimeTotals[month].heuresAFaires;
     }
     return timeByMonth;
   }
