@@ -14,6 +14,16 @@ export class UserService {
   private _loggedUser = new BehaviorSubject<User | null>(null);
   private _userDatas: User | null = null;
 
+  private _isSomethingChanged = new BehaviorSubject<boolean>(false);
+
+  get isSomethingChanged$(): Observable<boolean> {
+    return this._isSomethingChanged.asObservable();
+  }
+
+  set isSomethingChanged(value: boolean) {
+    this._isSomethingChanged.next(value);
+  }
+
   constructor(private readonly firestore: Firestore, private storageService: StorageService, private router: Router) {}
 
   // ================= Handling logged in user ================= \\
@@ -149,11 +159,13 @@ export class UserService {
     }
   }
 
-  public async updateHourOfMonth(month: string) {
+  public async updateLocalModification() {
     let user = await firstValueFrom(this.getLoggedUser());
 
     if (user) {
-      console.log(`updateHourOfMonth = ` + user?.strucCall.lastSaveTime[month].heuresAFaires);
+      console.log(`updateHourOfMonth 09/2023 = ` + user?.strucCall.lastSaveTime['09/2023']);
+      console.log(`updateHourOfMonth 08/2023 = ` + user?.strucCall.lastSaveTime['08/2023']);
+      console.log(`updateHourOfMonth 07/2023 = ` + user?.strucCall.lastSaveTime['07/2023']);
       const usersDocumentReference = doc(this.firestore, `users/${user.id}`);
       try {
         await updateDoc(usersDocumentReference, { ...user });
