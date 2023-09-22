@@ -26,7 +26,6 @@ export class GaugeComponent implements OnInit {
 
   private setGauge(timeTotals: any) {
     this.hoursRealized = false;
-    if (this.month === '09/2023') console.log('coucou refresh', timeTotals.heuresAFaires);
     if (timeTotals.heuresAFaires == 0) timeTotals.heuresAFaires = DateUtils.getWorkingHoursOfMonthByDates(this.month);
     if (!timeTotals) this.strucGauge.hoursRealized = 0;
     else {
@@ -62,15 +61,10 @@ export class GaugeComponent implements OnInit {
     if (!validate) this.showInputSetHours();
     else {
       let num = parseInt(this.inputHour, 10);
-      if (!isNaN(num)) {
-        // La conversion s'est bien déroulée, num contient maintenant l'entier.
+      if (!isNaN(num) && this.timeTotals.heuresAFaires !== num) {
         this.timeTotals.heuresAFaires = num;
-        console.log(`Le nombre est : ${num}`);
         this.setGauge(this.timeTotals);
-        this.userService.updateHourOfMonth(this.month);
-      } else {
-        // La chaîne ne contenait pas un nombre valide.
-        console.log('La chaîne ne représente pas un nombre valide.');
+        this.userService.isSomethingChanged = true;
       }
     }
     this.inputHour = '';
