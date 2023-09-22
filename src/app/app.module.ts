@@ -16,6 +16,7 @@ import { MaterialModule } from 'src/assets/module/meterial.module';
 import { SideNavComponent } from './components/side-nav/side-nav.component';
 import { SliderComponent } from './components/slider/slider.component';
 import { GaugeComponent } from './components/slider/gauge/gauge.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [AppComponent, LoginComponent, HomeComponent, SideNavComponent, SliderComponent, GaugeComponent],
@@ -28,6 +29,7 @@ import { GaugeComponent } from './components/slider/gauge/gauge.component';
     HttpClientModule,
     BrowserAnimationsModule,
     MaterialModule,
+    FormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

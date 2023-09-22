@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { deleteDoc, Firestore, getDoc, setDoc } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { collection, doc, updateDoc } from '@firebase/firestore';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { StrucCall, User } from 'src/app/models/users';
 import { StorageService } from './storage.service';
 
@@ -13,6 +13,16 @@ export class UserService {
   private usersCollection = collection(this.firestore, 'users');
   private _loggedUser = new BehaviorSubject<User | null>(null);
   private _userDatas: User | null = null;
+
+  private _isSomethingChanged = new BehaviorSubject<boolean>(false);
+
+  get isSomethingChanged$(): Observable<boolean> {
+    return this._isSomethingChanged.asObservable();
+  }
+
+  set isSomethingChanged(value: boolean) {
+    this._isSomethingChanged.next(value);
+  }
 
   constructor(private readonly firestore: Firestore, private storageService: StorageService, private router: Router) {}
 
@@ -146,6 +156,20 @@ export class UserService {
       await deleteDoc(usersDocumentReference);
     } catch (error) {
       console.error('User.service : delete : ', error);
+    }
+  }
+
+  public async updateLocalModification() {
+    let user = await firstValueFrom(this.getLoggedUser());
+
+    if (user) {
+      const usersDocumentReference = doc(this.firestore, `users/${user.id}`);
+      try {
+        await updateDoc(usersDocumentReference, { ...user });
+      } catch (error) {
+        console.error('User.service : update : ', error);
+      }
+      this.storageService.saveUser(user);
     }
   }
 }

@@ -1,15 +1,16 @@
 <div id="body-pages">
     <h1>Hello {{ user?.name }} !</h1>
-    <div *ngIf="showButton">
+    <div *ngIf="showButtonRefresh">
         <span>
             <button mat-fab extended color="primary" (click)="processGetLogtime()">Refresh Logtime</button>
+            <button *ngIf="showButtonSave" mat-fab extended color="primary" (click)="processSave()" style="margin-left: 10px">Save</button>
             <p>Nombre d'actualisation restant {{ user!.strucCall.numberCall }} <br /></p>
             <p>dernière actualisation {{ user!.strucCall.date }} {{ user!.strucCall.time }}</p>
         </span>
         <mat-error *ngIf="messageError !== ''">{{ messageError }}</mat-error>
         <app-slider [timeTotals]="timeTotals" [timeByMonthKeys]="timeByMonthKeys"></app-slider>
     </div>
-    <div id="spinner" *ngIf="!showButton">
+    <div id="spinner" *ngIf="!showButtonRefresh">
         <mat-spinner></mat-spinner>
     </div>
 </div>
