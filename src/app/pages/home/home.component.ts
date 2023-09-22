@@ -55,7 +55,6 @@ export class HomeComponent implements OnInit {
 
   public async processGetLogtime() {
     const time = new Date().toLocaleTimeString();
-    let saveHoursPreference;
 
     this.timeByMonthKeys = [];
     if (this.storedApiCall && this.storedApiCall.date === this.today && this.storedApiCall.numberCall === 0)
@@ -65,7 +64,6 @@ export class HomeComponent implements OnInit {
       this.timeTotals = await LogtimeUtils.getLogtime(this.user!.id, this.timeTotals);
       this.timeByMonthKeys = this.MyObject.keys(this.timeTotals);
       this.checkIfCurrentMonthExsit();
-      this.timeTotals.heuresAFaires = saveHoursPreference;
       this.timeByMonthKeys = DateUtils.formatTimeByMonthKeys(this.timeByMonthKeys);
       if (this.storedApiCall && this.storedApiCall.date === this.today) {
         this.user!.strucCall.numberCall--;

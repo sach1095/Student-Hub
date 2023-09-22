@@ -163,9 +163,6 @@ export class UserService {
     let user = await firstValueFrom(this.getLoggedUser());
 
     if (user) {
-      console.log(`updateHourOfMonth 09/2023 = ` + user?.strucCall.lastSaveTime['09/2023']);
-      console.log(`updateHourOfMonth 08/2023 = ` + user?.strucCall.lastSaveTime['08/2023']);
-      console.log(`updateHourOfMonth 07/2023 = ` + user?.strucCall.lastSaveTime['07/2023']);
       const usersDocumentReference = doc(this.firestore, `users/${user.id}`);
       try {
         await updateDoc(usersDocumentReference, { ...user });
