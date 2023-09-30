@@ -1,6 +1,6 @@
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { format } from 'date-fns';
-import * as moment from 'moment';
+import * as moment from 'moment-timezone';
 import { environment } from 'src/environments/environment.prod';
 
 export interface strucGauge {
@@ -30,10 +30,10 @@ export class LogtimeUtils {
         userlogtime[0].end_at = date_now;
       }
     });
-    // await getLogtimeV2({ login: "sbaranes", client_id: environment.CLIENT_ID, client_secret: environment.CLIENT_SECRET }).then(async (rep: any) => {
-    //   userlogtime2 = rep.data;
-    //   console.log('new object return = ', userlogtime2);
-    // });
+    await getLogtimeV2({ login: "sbaranes", client_id: environment.CLIENT_ID, client_secret: environment.CLIENT_SECRET }).then(async (rep: any) => {
+      userlogtime2 = rep.data;
+      console.log('new object return = ', userlogtime2);
+    });
     // console.log('object return = ', userlogtime); // FOR DEBUG
     return userlogtime;
   }
@@ -43,8 +43,18 @@ export class LogtimeUtils {
     let timeByDay: any = {};
 
     response.forEach((item: any) => {
-      const beginAt = moment(item.begin_at).add(2, 'hours');
-      const endAt = moment(item.end_at).add(2, 'hours');
+
+       // Convertir la date de début en moment.js et spécifier le fuseau horaire UTC
+  const beginAt1 = moment(item.begin_at).tz('UTC');
+
+  // Convertir la date de fin en moment.js et spécifier le fuseau horaire UTC
+  const endAt1 = moment(item.end_at).tz('UTC');
+
+  // Convertir les dates en heure de Paris (UTC+2 pendant l'heure d'été, UTC+1 pendant l'heure standard)
+  const beginAt = beginAt1.clone().tz('Europe/Paris');
+  const endAt = endAt1.clone().tz('Europe/Paris');
+      // const beginAt = moment(item.begin_at).add(2, 'hours');
+      // const endAt = moment(item.end_at);
       const duration = moment.duration(endAt.diff(beginAt));
 
       const minutes = duration.asMinutes();
@@ -86,17 +96,14 @@ export class LogtimeUtils {
     });
 
     // Calcul du total par mois
-    // for (const month in timeByMonth) {
-    //   const monthDetails = timeByMonth[month].details;
-    //   const totalDuration = Object.values(monthDetails).reduce((total: any, duration: any) => this.addDurations(total, duration), '0h00');
+    for (const month in timeByMonth) {
+      const monthDetails = timeByMonth[month].details;
+      const totalDuration = Object.values(monthDetails).reduce((total: any, duration: any) => this.addDurations(total, duration), '0h00');
 
-    //   timeByMonth[month].total = totalDuration;
-    //   if (oldTimeTotals && oldTimeTotals[month].heuresAFaires != 0) timeByMonth[month].heuresAFaires = oldTimeTotals[month].heuresAFaires;
-    // }
-
-    const updatedTimeTotals = oldTimeTotals ? Object.assign({}, oldTimeTotals, timeByMonth) : timeByMonth;
-
-    return updatedTimeTotals;
+      timeByMonth[month].total = totalDuration;
+      if (oldTimeTotals && oldTimeTotals[month].heuresAFaires != 0) timeByMonth[month].heuresAFaires = oldTimeTotals[month].heuresAFaires;
+    }
+    return timeByMonth;
   }
 
   static addDurations(duration1: any, duration2: any): string {
