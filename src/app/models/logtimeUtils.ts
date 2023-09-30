@@ -18,8 +18,10 @@ export class LogtimeUtils {
   static async fetchLogtime(id: string): Promise<any> {
     const functions = getFunctions();
     const getLogtime = httpsCallable(functions, 'getLogtime');
+    const getLogtimeV2 = httpsCallable(functions, 'getLogtimeV2');
 
     let userlogtime: any;
+    let userlogtime2: any;
     await getLogtime({ id: id, client_id: environment.CLIENT_ID, client_secret: environment.CLIENT_SECRET }).then(async (rep: any) => {
       userlogtime = rep.data;
       if (!rep.data[0].end_at) {
@@ -27,6 +29,10 @@ export class LogtimeUtils {
         date_now = format(new Date(), 'yyyy-MM-dd').toString() + 'T' + format(new Date(), 'HH:mm:ss').toString() + '.000Z';
         userlogtime[0].end_at = date_now;
       }
+    });
+    await getLogtimeV2({ login: "sbaranes", client_id: environment.CLIENT_ID, client_secret: environment.CLIENT_SECRET }).then(async (rep: any) => {
+      userlogtime2 = rep.data;
+      console.log('new object return = ', userlogtime2);
     });
     // console.log('object return = ', userlogtime); // FOR DEBUG
     return userlogtime;
