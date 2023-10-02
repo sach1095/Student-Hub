@@ -14,7 +14,6 @@ export class HomeComponent implements OnInit {
   public user?: User | null;
   public messageError: string = '';
   public showButtonRefresh = false;
-  public showButtonSave = false;
   public timeTotals: any;
   public timeByMonthKeys: string[] = [];
   public MyObject = Object;
@@ -26,27 +25,42 @@ export class HomeComponent implements OnInit {
 
   async ngOnInit() {
     await this.fetchLoggedUser();
-    this.userService.isSomethingChanged$.subscribe((value) => {
-      this.showButtonSave = value;
-      // Faites quelque chose en réponse au changement, si nécessaire.
-    });
-    if (this.user?.strucCall.numberCall === 6 || this.user?.strucCall.date !== this.today) {
-      this.processGetLogtime();
+
+    this.initialiseStoredApiCall();
+    this.handleGetLogtime();
+  }
+
+  private initialiseStoredApiCall(): void {
+    if (!this.user || !this.user.strucCall) return;
+
+    const { date, numberCall, time, lastSaveTime, lastSaveMonth } = this.user.strucCall;
+    this.storedApiCall = { date, numberCall, time, lastSaveTime, lastSaveMonth };
+
+    this.timeTotals = this.storedApiCall.lastSaveTime;
+    this.timeByMonthKeys = this.MyObject.keys(this.timeTotals);
+  }
+
+  private async handleGetLogtime(): Promise<void> {
+    if (!this.user) return;
+
+    if (this.user.strucCall.numberCall === 6 || this.user.strucCall.date !== this.today) {
+      await this.processGetLogtime();
     } else {
-      this.storedApiCall = {
-        date: this.user!.strucCall.date,
-        numberCall: this.user!.strucCall.numberCall,
-        time: this.user!.strucCall.time,
-        lastSaveTime: this.user!.strucCall.lastSaveTime,
-        lastSaveMonth: this.user!.strucCall.lastSaveMonth,
-      };
-      this.timeTotals = this.storedApiCall.lastSaveTime;
-      this.timeByMonthKeys = this.MyObject.keys(this.timeTotals);
-      if (this.storedApiCall.date === '') this.timeTotals = await LogtimeUtils.getLogtime(this.user!.id, null);
+      await this.updateTimeTotalsIfNeeded();
       this.checkIfCurrentMonthExsit();
-      this.timeByMonthKeys = DateUtils.formatTimeByMonthKeys(this.timeByMonthKeys);
+      this.initialiseTimeByMonthKeys();
       this.showButtonRefresh = true;
     }
+  }
+
+  private async updateTimeTotalsIfNeeded(): Promise<void> {
+    if (this.storedApiCall && this.storedApiCall.date === '') {
+      this.timeTotals = await LogtimeUtils.getLogtime(this.user!.login, this.timeTotals || {});
+    }
+  }
+
+  private initialiseTimeByMonthKeys(): void {
+    this.timeByMonthKeys = DateUtils.formatTimeByMonthKeys(this.timeByMonthKeys);
   }
 
   private async fetchLoggedUser() {
@@ -61,7 +75,7 @@ export class HomeComponent implements OnInit {
       this.messageError = 'You have reached the maximum number of calls per day';
     else {
       this.showButtonRefresh = false;
-      this.timeTotals = await LogtimeUtils.getLogtime(this.user!.id, this.timeTotals);
+      this.timeTotals = await LogtimeUtils.getLogtime(this.user!.login, this.timeTotals || {});
       this.timeByMonthKeys = this.MyObject.keys(this.timeTotals);
       this.checkIfCurrentMonthExsit();
       this.timeByMonthKeys = DateUtils.formatTimeByMonthKeys(this.timeByMonthKeys);
@@ -88,10 +102,5 @@ export class HomeComponent implements OnInit {
         heuresAFaires: 0, // Initialiser à 0 pour set apres le nombres d'heures a realiser dans le mois
       };
     }
-  }
-
-  public processSave() {
-    this.userService.updateLocalModification();
-    this.showButtonSave = false;
   }
 }

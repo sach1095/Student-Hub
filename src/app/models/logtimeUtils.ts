@@ -1,6 +1,4 @@
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { format } from 'date-fns';
-import * as moment from 'moment-timezone';
 import { environment } from 'src/environments/environment.prod';
 
 export interface strucGauge {
@@ -10,100 +8,68 @@ export interface strucGauge {
 }
 
 export class LogtimeUtils {
-  static async getLogtime(id: string, oldTimeTotals: any) {
-    let response = await LogtimeUtils.fetchLogtime(id);
-    return this.calculateTimeConnected(response, oldTimeTotals);
+  static async getLogtime(login: string, oldTimeTotals: any) {
+    let response = await LogtimeUtils.fetchLogtime(login);
+
+    response = await this.calculateTimeConnected(response, oldTimeTotals);
+    return response;
   }
 
-  static async fetchLogtime(id: string): Promise<any> {
+  static async fetchLogtime(login: string): Promise<any> {
     const functions = getFunctions();
-    const getLogtime = httpsCallable(functions, 'getLogtime');
     const getLogtimeV2 = httpsCallable(functions, 'getLogtimeV2');
 
     let userlogtime: any;
-    let userlogtime2: any;
-    await getLogtime({ id: id, client_id: environment.CLIENT_ID, client_secret: environment.CLIENT_SECRET }).then(async (rep: any) => {
+
+    await getLogtimeV2({ login: login, client_id: environment.CLIENT_ID, client_secret: environment.CLIENT_SECRET }).then(async (rep: any) => {
       userlogtime = rep.data;
-      if (!rep.data[0].end_at) {
-        let date_now = '';
-        date_now = format(new Date(), 'yyyy-MM-dd').toString() + 'T' + format(new Date(), 'HH:mm:ss').toString() + '.000Z';
-        userlogtime[0].end_at = date_now;
-      }
-    });
-    await getLogtimeV2({ login: "sbaranes", client_id: environment.CLIENT_ID, client_secret: environment.CLIENT_SECRET }).then(async (rep: any) => {
-      userlogtime2 = rep.data;
-      console.log('new object return = ', userlogtime2);
     });
     // console.log('object return = ', userlogtime); // FOR DEBUG
     return userlogtime;
   }
 
-  static async calculateTimeConnected(response: any, oldTimeTotals: any) {
-    let timeByMonth: any = {};
-    let timeByDay: any = {};
+  static async calculateTimeConnected(newData: any, oldTimeTotals: any) {
+    oldTimeTotals = oldTimeTotals || {};
+    for (const dayKey in newData) {
+      // Extract date and time components
+      const [year, month, day] = dayKey.split('-');
+      const formattedDuration = this.timeToFormattedDuration(newData[dayKey]);
+      const yearMonth = `${month}/${year}`;
+      const dayWithoutLeadingZero = String(parseInt(day));
 
-    response.forEach((item: any) => {
-
-       // Convertir la date de début en moment.js et spécifier le fuseau horaire UTC
-  const beginAt1 = moment(item.begin_at).tz('UTC');
-
-  // Convertir la date de fin en moment.js et spécifier le fuseau horaire UTC
-  const endAt1 = moment(item.end_at).tz('UTC');
-
-  // Convertir les dates en heure de Paris (UTC+2 pendant l'heure d'été, UTC+1 pendant l'heure standard)
-  const beginAt = beginAt1.clone().tz('Europe/Paris');
-  const endAt = endAt1.clone().tz('Europe/Paris');
-      // const beginAt = moment(item.begin_at).add(2, 'hours');
-      // const endAt = moment(item.end_at);
-      const duration = moment.duration(endAt.diff(beginAt));
-
-      const minutes = duration.asMinutes();
-      const hours = Math.floor(minutes / 60);
-      const remainingMinutes = Math.floor(minutes % 60);
-
-      const formattedDuration = `${hours}h${remainingMinutes.toString().padStart(2, '0')}`;
-
-      const day = beginAt.format('D');
-      const yearMonth = beginAt.format('MM/YYYY');
-
-      // Temps par jour
-      if (!timeByDay[yearMonth]) {
-        timeByDay[yearMonth] = {};
-      }
-
-      if (!timeByDay[yearMonth][day]) {
-        timeByDay[yearMonth][day] = [formattedDuration];
-      } else {
-        timeByDay[yearMonth][day].push(formattedDuration);
-      }
-
-      // Temps par mois
-      if (!timeByMonth[yearMonth]) {
-        timeByMonth[yearMonth] = {
+      // Si le mois n'est pas déjà dans oldTimeTotals, initialisez-le.
+      if (!oldTimeTotals[yearMonth]) {
+        oldTimeTotals[yearMonth] = {
           details: {},
           total: '',
-          heuresAFaires: 0, // Initialiser à 0 pour set apres le nombres d'heures a realiser dans le mois
+          heuresAFaires: 0,
         };
       }
 
-      if (!timeByMonth[yearMonth].details[day]) {
-        timeByMonth[yearMonth].details[day] = formattedDuration;
-      } else {
-        const existingDuration = timeByMonth[yearMonth].details[day];
-        const totalDuration = this.addDurations(existingDuration, formattedDuration);
-        timeByMonth[yearMonth].details[day] = totalDuration;
-      }
-    });
-
-    // Calcul du total par mois
-    for (const month in timeByMonth) {
-      const monthDetails = timeByMonth[month].details;
-      const totalDuration = Object.values(monthDetails).reduce((total: any, duration: any) => this.addDurations(total, duration), '0h00');
-
-      timeByMonth[month].total = totalDuration;
-      if (oldTimeTotals && oldTimeTotals[month].heuresAFaires != 0) timeByMonth[month].heuresAFaires = oldTimeTotals[month].heuresAFaires;
+      // Mettre à jour la durée du jour spécifique.
+      oldTimeTotals[yearMonth].details[dayWithoutLeadingZero] = formattedDuration;
     }
-    return timeByMonth;
+
+    // Pour chaque mois dans newData, calculez le total.
+    for (const month in newData) {
+      const [year, monthNum] = month.split('-');
+      const yearMonthKey = `${monthNum}/${year}`;
+      if (oldTimeTotals[yearMonthKey]) {
+        const monthDetails = oldTimeTotals[yearMonthKey].details;
+        const totalDuration = Object.values(monthDetails).reduce<string>((total: any, duration: any) => this.addDurations(total, duration), '0h00');
+
+        // Convertissez le total au format "HH[h]MM".
+        const [totalHours, totalMinutes] = totalDuration.split('h');
+        oldTimeTotals[yearMonthKey].total = `${parseInt(totalHours)}h${totalMinutes.padStart(2, '0')}`;
+      }
+    }
+    return oldTimeTotals;
+  }
+
+  // Helper method pour convertir le temps au format désiré.
+  static timeToFormattedDuration(timeStr: string) {
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    return `${hours}h${minutes.toString().padStart(2, '0')}`;
   }
 
   static addDurations(duration1: any, duration2: any): string {

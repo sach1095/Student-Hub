@@ -26,7 +26,10 @@
         ".git",
         "firebase-debug.log",
         "firebase-debug.*.log"
-      ]
+      ],
+      "cors": {
+        "origin": "https://student-hub.fr"
+      }
     }
   ]
 }
