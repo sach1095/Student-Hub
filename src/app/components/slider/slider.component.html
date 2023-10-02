@@ -18,6 +18,7 @@
         <path d="M5 3l3.057-3 11.943 12-11.943 12-3.057-3 9-9z" />
     </svg>
 </div>
+<button *ngIf="showButtonSave" mat-fab extended color="primary" (click)="processSave()" style="font-size: 19px">Save</button>
 <div class="dots">
     <button class="dot-button" (click)="slider!.moveToIdx(i)" *ngFor="let slide of dotHelper; let i = index" [class]="'dot ' + (i === currentSlide ? 'active' : '')"></button>
 </div>

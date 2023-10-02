@@ -3,7 +3,6 @@
     <div *ngIf="showButtonRefresh">
         <span>
             <button mat-fab extended color="primary" (click)="processGetLogtime()">Refresh Logtime</button>
-            <button *ngIf="showButtonSave" mat-fab extended color="primary" (click)="processSave()" style="margin-left: 10px">Save</button>
             <p>Nombre d'actualisation restant {{ user!.strucCall.numberCall }} <br /></p>
             <p>dernière actualisation {{ user!.strucCall.date }} {{ user!.strucCall.time }}</p>
         </span>

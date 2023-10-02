@@ -2,6 +2,7 @@ import { Component, ElementRef, Input, OnChanges, QueryList, SimpleChanges, View
 import KeenSlider, { KeenSliderInstance } from 'keen-slider';
 import { GaugeComponent } from './gauge/gauge.component';
 import { DateUtils } from 'src/app/models/dateUtils';
+import { UserService } from 'src/app/services/user.service';
 
 interface GaugeData {
   month: string;
@@ -23,11 +24,17 @@ export class SliderComponent implements OnChanges {
   @ViewChildren(GaugeComponent)
   gaugeComponents!: QueryList<GaugeComponent>;
   slider?: KeenSliderInstance;
+  public showButtonSave = false;
 
   currentSlide: number = 1;
   dotHelper: Array<Number> = [];
 
+  constructor(private userService: UserService) {}
+
   async ngOnInit() {
+    this.userService.isSomethingChanged$.subscribe((value) => {
+      this.showButtonSave = value;
+    });
     this.timeByMonthKeys.forEach((month) => {
       const gaugeData: GaugeData = {
         month: month,
@@ -79,5 +86,10 @@ export class SliderComponent implements OnChanges {
 
   public getMonthNameFromDate(dateString: string) {
     return DateUtils.getMonthNameFromDate(dateString);
+  }
+
+  public processSave() {
+    this.userService.updateLocalModification();
+    this.showButtonSave = false;
   }
 }

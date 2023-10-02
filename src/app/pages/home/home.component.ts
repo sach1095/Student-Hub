@@ -14,7 +14,6 @@ export class HomeComponent implements OnInit {
   public user?: User | null;
   public messageError: string = '';
   public showButtonRefresh = false;
-  public showButtonSave = false;
   public timeTotals: any;
   public timeByMonthKeys: string[] = [];
   public MyObject = Object;
@@ -26,9 +25,7 @@ export class HomeComponent implements OnInit {
 
   async ngOnInit() {
     await this.fetchLoggedUser();
-    this.userService.isSomethingChanged$.subscribe((value) => {
-      this.showButtonSave = value;
-    });
+
     this.initialiseStoredApiCall();
     this.handleGetLogtime();
   }
@@ -105,10 +102,5 @@ export class HomeComponent implements OnInit {
         heuresAFaires: 0, // Initialiser à 0 pour set apres le nombres d'heures a realiser dans le mois
       };
     }
-  }
-
-  public processSave() {
-    this.userService.updateLocalModification();
-    this.showButtonSave = false;
   }
 }
