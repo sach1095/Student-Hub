@@ -10,6 +10,9 @@
                 <ul class="navbar-mobile-content-links">
                     <li><a [routerLink]="'/home'" routerLinkActive="active-link">Accueil</a></li>
                 </ul>
+                <ul class="navbar-mobile-content-links">
+                    <li><a [routerLink]="'/matrice'" routerLinkActive="active-link">Matrice</a></li>
+                </ul>
             </ng-container>
             <ul class="navbar-mobile-content-links">
                 <li><a (click)="logout()">Se déconnecter</a></li>
@@ -35,6 +38,9 @@
             <div class="navbar-desk-app-info__links">
                 <ul>
                     <li><a [routerLink]="'/home'" routerLinkActive="active-link">Accueil</a></li>
+                </ul>
+                <ul>
+                    <li><a [routerLink]="'/matrice'" routerLinkActive="active-link">Matrice</a></li>
                 </ul>
             </div>
         </ng-container>
