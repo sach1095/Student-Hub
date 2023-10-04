@@ -31,7 +31,7 @@ export class MatriceComponent {
     let endTime = performance.now();
     let timeDiff = endTime - startTime; // en millisecondes
     timeDiff /= 1000; // convertit en secondes
-    console.log('Le code a mis ' + timeDiff + " secondes à s'exécuter.");
+    console.log('La requête a mis ' + timeDiff + " secondes à s'exécuter.");
   }
 
   private async fetchLoggedUser() {

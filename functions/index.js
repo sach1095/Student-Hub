@@ -125,7 +125,7 @@ exports.getStudentsConnected = onCall(async (request) => {
         id: item.id,
         login: item.user.login,
         url: item.user.url,
-        img: item.user.image.versions.small,
+        img: item.user.image.link,
         host: item.host,
       }));
 
