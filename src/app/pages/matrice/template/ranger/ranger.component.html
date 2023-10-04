@@ -1,0 +1,9 @@
+<div *ngIf="zoneIndex !== 3" class="ranger even-zone-inverse">
+    <app-poste *ngFor="let poste of ranger.postes | slice : 0 : ranger.postes.length | reverseArray" [poste]="poste"></app-poste>
+    <p>{{ "R" + ranger.ranger }}</p>
+</div>
+
+<div *ngIf="zoneIndex === 3" class="ranger even-zone">
+    <app-poste *ngFor="let poste of ranger.postes | slice : 0 : ranger.postes.length | reverseArray" [poste]="poste"></app-poste>
+    <p>{{ "R" + ranger.ranger }}</p>
+</div>

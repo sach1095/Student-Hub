@@ -1,0 +1,11 @@
+<div class="poste">
+    <div class="poste-image">
+        <img *ngIf="poste.user?.img; else noImage" [src]="poste.user?.img" alt="User Image" />
+        <ng-template #noImage>
+            <div class="placeholder-image"></div>
+        </ng-template>
+    </div>
+    <div class="poste-number">
+        {{ poste.poste }}
+    </div>
+</div>

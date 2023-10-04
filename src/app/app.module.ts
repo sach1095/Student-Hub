@@ -17,9 +17,10 @@ import { SideNavComponent } from './components/side-nav/side-nav.component';
 import { SliderComponent } from './components/slider/slider.component';
 import { GaugeComponent } from './components/slider/gauge/gauge.component';
 import { FormsModule } from '@angular/forms';
+import { MatriceComponent } from './pages/matrice/matrice.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, HomeComponent, SideNavComponent, SliderComponent, GaugeComponent],
+  declarations: [AppComponent, LoginComponent, HomeComponent, SideNavComponent, SliderComponent, GaugeComponent, MatriceComponent],
   imports: [
     BrowserModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),

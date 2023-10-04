@@ -1,0 +1,32 @@
+.ranger {
+  display: flex;
+  justify-content: flex-end;
+}
+.ranger p {
+  min-width: 2em;
+  text-align: center;
+  align-items: center;
+  display: flex;
+  font-size: 31px;
+}
+
+app-poste {
+  display: inline-flex !important;
+  vertical-align: middle !important;
+}
+
+// styles pour les zones impaires
+.even-zone-inverse app-poste:nth-child(odd) {
+  margin-top: 30px !important;
+}
+.even-zone-inverse app-poste:nth-child(even) {
+  margin-bottom: 30px !important;
+}
+
+// styles pour les zones paires
+.even-zone app-poste:nth-child(odd) {
+  margin-bottom: 30px !important;
+}
+.even-zone app-poste:nth-child(even) {
+  margin-top: 30px !important;
+}
