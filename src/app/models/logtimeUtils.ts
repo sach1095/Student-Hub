@@ -11,8 +11,7 @@ export class LogtimeUtils {
   static async getLogtime(login: string, oldTimeTotals: any) {
     let response = await LogtimeUtils.fetchLogtime(login);
 
-    response = await this.calculateTimeConnected(response, oldTimeTotals);
-    return response;
+    return await this.calculateTimeConnected(response, oldTimeTotals);
   }
 
   static async fetchLogtime(login: string): Promise<any> {

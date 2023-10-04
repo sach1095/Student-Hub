@@ -4,14 +4,8 @@ import { firstValueFrom } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { environment } from 'src/environments/environment.prod';
-
-export interface userMatrice {
-  id: String;
-  url: String;
-  img: String;
-  host: String;
-  login: String;
-}
+import { Matrice, UserMatrice } from 'src/app/models/matrice';
+import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
   selector: 'app-matrice',
@@ -20,15 +14,24 @@ export interface userMatrice {
 })
 export class MatriceComponent {
   public user?: User | null;
-  public usersMatrice?: userMatrice[] | null;
+  public usersMatrice?: UserMatrice[] | null;
+  public matrice?: Matrice;
+  public selectedTabIndex: number = 0;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private storageService: StorageService) {}
 
   async ngOnInit() {
     await this.fetchLoggedUser();
+    let startTime = performance.now();
     await this.fetchStudent();
-    console.log('usersMatrice');
-    console.log(this.usersMatrice);
+
+    this.selectedTabIndex = this.storageService.getMatriceIndex() || 0;
+    if (this.usersMatrice) this.matrice = new Matrice(this.usersMatrice);
+    else console.error('userMatrice error instanciated, please reload page');
+    let endTime = performance.now();
+    let timeDiff = endTime - startTime; // en millisecondes
+    timeDiff /= 1000; // convertit en secondes
+    console.log('Le code a mis ' + timeDiff + " secondes à s'exécuter.");
   }
 
   private async fetchLoggedUser() {
@@ -45,17 +48,13 @@ export class MatriceComponent {
         client_secret: environment.CLIENT_SECRET,
       });
 
-      this.usersMatrice = rep.data.map((user: any) => {
-        return {
-          id: user.id,
-          login: user.login,
-          url: user.url,
-          img: user.img,
-          host: user.host,
-        };
-      });
+      this.usersMatrice = rep.data;
     } catch (error) {
       console.error('Failed to fetch students: ', error);
     }
+  }
+
+  tabChanged(tabIndex: number): void {
+    this.storageService.saveMatriceIndex(tabIndex);
   }
 }

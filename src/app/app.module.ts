@@ -18,9 +18,27 @@ import { SliderComponent } from './components/slider/slider.component';
 import { GaugeComponent } from './components/slider/gauge/gauge.component';
 import { FormsModule } from '@angular/forms';
 import { MatriceComponent } from './pages/matrice/matrice.component';
+import { ReverseArrayPipe } from './pages/matrice/template/reverse-array.pipe';
+import { PosteComponent } from './pages/matrice/template/poste/poste.component';
+import { RangerComponent } from './pages/matrice/template/ranger/ranger.component';
+import { ZoneComponent } from './pages/matrice/template/zone/zone.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, HomeComponent, SideNavComponent, SliderComponent, GaugeComponent, MatriceComponent],
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    HomeComponent,
+    SideNavComponent,
+    SliderComponent,
+    GaugeComponent,
+    MatriceComponent,
+    ReverseArrayPipe,
+    PosteComponent,
+    RangerComponent,
+    ZoneComponent,
+  ],
   imports: [
     BrowserModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
@@ -31,6 +49,8 @@ import { MatriceComponent } from './pages/matrice/matrice.component';
     BrowserAnimationsModule,
     MaterialModule,
     FormsModule,
+    MatTabsModule,
+    MatGridListModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

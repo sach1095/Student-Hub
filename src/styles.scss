@@ -38,11 +38,31 @@ $Student-Hub-theme: mat.define-light-theme((
 html, body { height: 100%; 	margin: 0px; color: whitesmoke ; }
 body { margin: 0px; font-family: Roboto, sans-serif;}
 
-html{
-  background-image: url("../src/assets/img/image_back.png");
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
+html {
+  background-size: 100% calc(100% / 1); /* ou une autre valeur qui correspond à votre besoin */
+  background-repeat: repeat-y;
 }
+
+html::after, html::before {
+  content: "";
+  display: block;
+  background-image: url("../src/assets/img/image_back.png");
+  background-size: cover;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+html::before {
+  top: 0;
+}
+
+html::after {
+  bottom: 0;
+  transform: rotate(180deg);
+}
+
 
 :root {
   /* --- colors */
@@ -151,4 +171,17 @@ a {
 }
 .mdc-list-item__primary-text{
   color: whitesmoke !important;
+}
+.mat-grid-tile-content{
+  top: 200px !important
+}
+
+.mdc-tab__text-label{
+  color: whitesmoke !important;
+  font-size: 30px !important;
+  font-weight: bold !important;
+}
+
+.mdc-tab-indicator__content{
+  border-color: var(--Student-Hub-btn) !important;
 }

@@ -1,0 +1,44 @@
+.matrice {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.zones-wrapper {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  flex-grow: 1;
+}
+
+.zone-container {
+  display: flex;
+  flex-basis: 50%;
+  overflow-y: auto;
+  flex-direction: column;
+  align-items: center;
+}
+
+mat-grid-list {
+  width: 100%;
+  height: calc(100% - 48px);
+}
+
+mat-grid-tile {
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  display: flex;
+  align-items: start; // ou utiliser "center" pour centrer le contenu verticalement
+}
+#spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
