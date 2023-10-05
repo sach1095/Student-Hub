@@ -35,12 +35,16 @@ $Student-Hub-theme: mat.define-light-theme((
 
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; 	margin: 0px; color: whitesmoke ; }
-body { margin: 0px; font-family: Roboto, sans-serif;}
+html, body { height: 100%; 	margin: 0px; color: whitesmoke ;}
+body { margin: 0px; font-family: Roboto, sans-serif; }
 
 html {
   background-size: 100% calc(100% / 1); /* ou une autre valeur qui correspond à votre besoin */
   background-repeat: repeat-y;
+}
+
+body, html {
+  scrollbar-width: none !important;
 }
 
 html::after, html::before {

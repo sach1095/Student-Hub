@@ -1,6 +1,17 @@
-<div class="poste">
-    <div class="poste-image">
+<!-- <div class="poste">
+    <div class="poste-image" (click)="navigateToUser()">
         <img *ngIf="poste.user?.img; else noImage" [src]="poste.user?.img" alt="User Image" />
+        <ng-template #noImage>
+            <div class="placeholder-image"></div>
+        </ng-template>
+    </div>
+    <div class="poste-number">
+        {{ poste.poste }}
+    </div>
+</div> -->
+<div class="poste">
+    <div class="poste-image" (click)="navigateToUser()">
+        <div *ngIf="poste.user?.img; else noImage" [style.background-image]="'url(' + poste.user?.img + ')'" class="user-image"></div>
         <ng-template #noImage>
             <div class="placeholder-image"></div>
         </ng-template>

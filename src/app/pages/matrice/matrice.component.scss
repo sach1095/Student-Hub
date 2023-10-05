@@ -24,7 +24,7 @@ mat-grid-list {
   height: calc(100% - 48px);
 }
 
-mat-grid-tile {
+mat-grid-tile mat-tab-group {
   overflow-y: auto;
 
   &::-webkit-scrollbar {
@@ -36,6 +36,7 @@ mat-grid-tile {
   display: flex;
   align-items: start; // ou utiliser "center" pour centrer le contenu verticalement
 }
+
 #spinner {
   display: flex;
   justify-content: center;

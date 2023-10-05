@@ -8,4 +8,9 @@ import { Poste } from 'src/app/models/matrice';
 })
 export class PosteComponent {
   @Input() poste!: Poste;
+
+  public navigateToUser() {
+    const url = `https://profile.intra.42.fr/users/${this.poste.user?.login}`;
+    if (this.poste.user) window.open(url, '_blank');
+  }
 }
