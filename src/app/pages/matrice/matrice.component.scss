@@ -34,7 +34,7 @@ mat-grid-tile mat-tab-group {
   -ms-overflow-style: none;
   scrollbar-width: none;
   display: flex;
-  align-items: start; // ou utiliser "center" pour centrer le contenu verticalement
+  align-items: flex-start;
 }
 
 #spinner {
