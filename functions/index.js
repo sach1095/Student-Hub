@@ -15,8 +15,7 @@ const pubsub = functions.pubsub;
 
 admin.initializeApp();
 
-exports.scheduledFetchStudentsConnected = pubsub.schedule('*/5 7-0 * * *').timeZone('Europe/Paris') // Assurez-vous de définir le bon fuseau horaire
-.onRun(async (context) => {
+exports.scheduledFetchStudentsConnected = pubsub.schedule('every 10 minutes').timeZone('Europe/Paris').onRun(async (context) => {
 
     try {
         let finalResponseData;
@@ -86,8 +85,8 @@ exports.scheduledFetchStudentsConnected = pubsub.schedule('*/5 7-0 * * *').timeZ
 exports.getData = onCall(async (request)  => {
 try {
         const { code  } = request.data;
-        const client_id = functions.config().api.client_id;
-        const client_secret = functions.config().api.client_secret;
+        const { client_id } = request.data;
+        const { client_secret } = request.data;
 
         // mise en place du header (coter backend)
         const params = new URLSearchParams();
