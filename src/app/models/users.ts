@@ -1,5 +1,19 @@
 export type TypeUser = 'Student' | 'Administrateur';
 
+export class ParamMapInterface {
+  public size_h1: number;
+  public size_h1_mobile: number;
+  public size_poste: number;
+  public size_poste_mobile: number;
+  // public size_zone_h1: number;
+
+  constructor(size_h1: number, size_h1_mobile: number, size_post: number, size_post_mobile: number) {
+    this.size_h1 = size_h1;
+    this.size_h1_mobile = size_h1_mobile;
+    this.size_poste = size_post;
+    this.size_poste_mobile = size_post_mobile;
+  }
+}
 export class StrucCall {
   public date: string;
   public time: string;
@@ -26,8 +40,20 @@ export class User {
   public campus: string;
   public year: string;
   public strucCall: StrucCall;
+  public paramMap: ParamMapInterface;
 
-  constructor(id: string, name: string, login: string, type: TypeUser, urlImg: string, wallet: string, campus: string, year: string, strucCall: StrucCall) {
+  constructor(
+    id: string,
+    name: string,
+    login: string,
+    type: TypeUser,
+    urlImg: string,
+    wallet: string,
+    campus: string,
+    year: string,
+    strucCall: StrucCall,
+    paramMap: ParamMapInterface
+  ) {
     this.id = id;
     this.name = name;
     this.login = login;
@@ -37,5 +63,6 @@ export class User {
     this.campus = campus;
     this.year = year;
     this.strucCall = strucCall;
+    this.paramMap = paramMap;
   }
 }

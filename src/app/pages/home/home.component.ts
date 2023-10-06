@@ -87,7 +87,7 @@ export class HomeComponent implements OnInit {
         this.storedApiCall = { date: this.today, numberCall: 5, time: time, lastSaveTime: this.timeTotals, lastSaveMonth: this.timeByMonthKeys };
       }
       this.user!.strucCall = this.storedApiCall;
-      this.userService.update(this.user!);
+      this.userService.updateUser();
       this.showButtonRefresh = true;
     }
   }

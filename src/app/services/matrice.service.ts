@@ -26,19 +26,25 @@ export class UserMatriceService {
   }
 
   public async getUsers(): Promise<UserMatrice[]> {
-    let refetch = false;
+    if (!this.lastFetchTime || this.shouldRefetch(this.lastFetchTime)) {
+      return this.fetchUsersMatriceLog();
+    }
 
-    if (this.lastFetchTime) {
-      const timeDiff = new Date().getTime() - this.lastFetchTime.getTime();
-      const timeDiffInMinutes = timeDiff / 1000 / 60;
-      if (timeDiffInMinutes > 5) refetch = true;
-    } else refetch = true;
-
-    if (this.userMatrice.length === 0 || refetch) return this.fetchUsersMatriceLog();
+    if (this.userMatrice.length === 0) return this.fetchUsersMatriceLog();
 
     const storedUsersMatrice = this.storageService.getUsersMatrice();
     if (storedUsersMatrice) return storedUsersMatrice;
 
     return this.fetchUsersMatriceLog();
+  }
+
+  private shouldRefetch(lastFetchTime: Date): boolean {
+    const now = new Date();
+    const nextFetchMinute = Math.ceil(now.getMinutes() / 10) * 10 + 2; // Gets the next full 10th minute + 1
+    const nextFetchTime = new Date(now);
+    nextFetchTime.setMinutes(nextFetchMinute, 0, 0); // Sets next fetch time
+
+    // If last fetch time is before the next fetch time and current time is after the next fetch time, refetch.
+    return lastFetchTime < nextFetchTime && now >= nextFetchTime;
   }
 }

@@ -3,7 +3,7 @@ import { deleteDoc, Firestore, getDoc, setDoc } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { collection, doc, updateDoc } from '@firebase/firestore';
 import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
-import { StrucCall, User } from 'src/app/models/users';
+import { ParamMapInterface, StrucCall, User } from 'src/app/models/users';
 import { StorageService } from './storage.service';
 
 @Injectable({
@@ -40,7 +40,8 @@ export class UserService {
         storageUser.wallet,
         storageUser.campus,
         storageUser.year,
-        storageUser.strucCall
+        storageUser.strucCall,
+        storageUser.paramMap
       );
       this._loggedUser.next(this._userDatas);
       this.setUserData(this._userDatas.id);
@@ -54,7 +55,7 @@ export class UserService {
       if (this._userDatas.strucCall.date !== today) {
         this._userDatas.strucCall.date = today;
         this._userDatas.strucCall.numberCall = 6;
-        this.update(this._userDatas);
+        this.updateUserByUser(this._userDatas);
       }
       this._loggedUser.next(this._userDatas);
       this.storageService.saveUser(this._userDatas);
@@ -78,6 +79,8 @@ export class UserService {
       const docRef = doc(this.usersCollection, uid);
       const temp = await getDoc(docRef);
       if (temp.exists()) {
+        const defaultParamsMap = new ParamMapInterface(2, 2, 5, 2);
+        const paramMap = temp.get('paramMap') || defaultParamsMap;
         const user = new User(
           temp.get('id'),
           temp.get('name'),
@@ -87,7 +90,8 @@ export class UserService {
           temp.get('wallet'),
           temp.get('campus'),
           temp.get('year'),
-          temp.get('strucCall')
+          temp.get('strucCall'),
+          paramMap
         );
         return user;
       }
@@ -119,6 +123,7 @@ export class UserService {
       campus: user.campus[0].name,
       year: user.pool_year,
       strucCall: { date: '', time: '', numberCall: 6, lastSaveTime: '', lastSaveMonth: [] },
+      paramMap: { size_h1: 2, size_h1_mobile: 2, size_poste: 5, size_poste_mobile: 2 },
     };
     try {
       await setDoc(doc(this.usersCollection, uid), userdb);
@@ -131,7 +136,8 @@ export class UserService {
         userdb.wallet,
         userdb.campus,
         userdb.year,
-        new StrucCall(userdb.strucCall.date, userdb.strucCall.time, userdb.strucCall.numberCall, userdb.strucCall.lastSaveTime, userdb.strucCall.lastSaveMonth)
+        new StrucCall(userdb.strucCall.date, userdb.strucCall.time, userdb.strucCall.numberCall, userdb.strucCall.lastSaveTime, userdb.strucCall.lastSaveMonth),
+        new ParamMapInterface(userdb.paramMap.size_h1, userdb.paramMap.size_h1_mobile, userdb.paramMap.size_poste, userdb.paramMap.size_poste_mobile)
       );
       this._loggedUser.next(user);
       this.storageService.saveUser(user);
@@ -140,27 +146,8 @@ export class UserService {
     }
   }
 
-  public async update(user: User) {
-    const usersDocumentReference = doc(this.firestore, `users/${user.id}`);
-    try {
-      await updateDoc(usersDocumentReference, { ...user });
-    } catch (error) {
-      console.error('User.service : update : ', error);
-    }
-    this.storageService.saveUser(user);
-  }
-
-  public async delete(id: string) {
-    const usersDocumentReference = doc(this.firestore, `users/${id}`);
-    try {
-      await deleteDoc(usersDocumentReference);
-    } catch (error) {
-      console.error('User.service : delete : ', error);
-    }
-  }
-
-  public async updateLocalModification() {
-    let user = await firstValueFrom(this.getLoggedUser());
+  public async updateUser() {
+    const user = await firstValueFrom(this.getLoggedUser());
 
     if (user) {
       const usersDocumentReference = doc(this.firestore, `users/${user.id}`);
@@ -170,6 +157,27 @@ export class UserService {
         console.error('User.service : update : ', error);
       }
       this.storageService.saveUser(user);
+    }
+  }
+
+  public async updateUserByUser(user: User) {
+    if (user) {
+      const usersDocumentReference = doc(this.firestore, `users/${user.id}`);
+      try {
+        await updateDoc(usersDocumentReference, { ...user });
+      } catch (error) {
+        console.error('User.service : update : ', error);
+      }
+      this.storageService.saveUser(user);
+    }
+  }
+
+  public async delete(id: string) {
+    const usersDocumentReference = doc(this.firestore, `users/${id}`);
+    try {
+      await deleteDoc(usersDocumentReference);
+    } catch (error) {
+      console.error('User.service : delete : ', error);
     }
   }
 }
