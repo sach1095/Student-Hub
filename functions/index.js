@@ -5,7 +5,7 @@
  * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
  *
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+**/
 
 const {onCall} = require("firebase-functions/v2/https");
 const fetch = require('isomorphic-fetch');
@@ -58,12 +58,23 @@ exports.scheduledFetchStudentsConnected = pubsub.schedule('every 10 minutes').ti
 
             const filteredData = allData.filter(item => item.end_at === null);
 
-            finalResponseData = filteredData.map(item => ({
+            const latestUserEntries = filteredData.reduce((accum, item) => {
+              if (
+                !accum[item.user.login] ||
+                new Date(accum[item.user.login].begin_at) < new Date(item.begin_at)
+              ) {
+                accum[item.user.login] = item;
+              }
+              return accum;
+            }, {});
+
+            finalResponseData = Object.values(latestUserEntries).map(item => ({
               id: item.id,
               login: item.user.login,
               url: item.user.url,
-              img: item.user.image.link,
+              img: item.user.image.url, // Faites attention à votre structure de données ici. Si c'est `item.user.image.link`, utilisez `.link`
               host: item.host,
+              begin_at: item.begin_at, // Si vous voulez également enregistrer la date "begin_at"
             }));
         } catch (error) {
           throw new functions.https.HttpsError("internal ", "Failed to get Students Connected ", error);
@@ -113,7 +124,6 @@ try {
         throw new functions.https.HttpsError('internal', 'Failed to get User from API42, ' + error.message );
       }
 });
-
 
 exports.getLogtimeV2 = onCall(async (request) => {
   try {

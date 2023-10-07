@@ -1,0 +1,32 @@
+.body-param-map{
+  background-color: black;
+}
+.btn-validation{
+	display: flex;
+	justify-content: space-around;
+}
+
+.field{
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+  font-size: 1.1rem;
+}
+.field-1{
+  display: flex;
+  flex-direction: column;
+  padding: 0.3rem;
+}
+
+#icon-close {
+  font-size: 30px;
+  position: absolute;
+  right: 0;
+  padding: 0.2rem 0.5rem 0.2rem 0.2rem;
+}
+
+.form-param{
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+}

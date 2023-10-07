@@ -24,6 +24,8 @@ import { RangerComponent } from './pages/matrice/template/ranger/ranger.componen
 import { ZoneComponent } from './pages/matrice/template/zone/zone.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { ParamMapComponent } from './pages/matrice/param-map/param-map.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -38,6 +40,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
     PosteComponent,
     RangerComponent,
     ZoneComponent,
+    ParamMapComponent,
   ],
   imports: [
     BrowserModule,
@@ -51,6 +54,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
     FormsModule,
     MatTabsModule,
     MatGridListModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

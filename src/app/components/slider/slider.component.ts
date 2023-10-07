@@ -89,7 +89,7 @@ export class SliderComponent implements OnChanges {
   }
 
   public processSave() {
-    this.userService.updateLocalModification();
+    this.userService.updateUser();
     this.showButtonSave = false;
   }
 }

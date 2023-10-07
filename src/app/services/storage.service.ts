@@ -30,6 +30,7 @@ export class StorageService {
     const users = localStorage.getItem(this._storageUsersMatrice);
     return users ? JSON.parse(users) : null;
   }
+
   public saveUsersMatrice(usersMatrice: UserMatrice[]) {
     localStorage.setItem(this._storageUsersMatrice, JSON.stringify(usersMatrice));
   }

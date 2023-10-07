@@ -10,6 +10,7 @@ export class AppService {
 
   public logOut() {
     this.userService.resetUser();
+    localStorage.removeItem('usersIndex');
     this.router.navigate(['/login']);
   }
 }

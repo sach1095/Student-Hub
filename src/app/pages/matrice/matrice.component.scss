@@ -1,3 +1,6 @@
+@import 'src/scss/breakpoints.scss';
+
+
 .matrice {
   display: flex;
   flex-direction: column;
@@ -8,15 +11,24 @@
   display: flex;
   flex-direction: row;
   overflow-x: auto;
-  flex-grow: 1;
+  justify-content: center;
+  @include for-mobile{
+    flex-direction: column;
+  }
 }
 
 .zone-container {
   display: flex;
-  flex-basis: 50%;
+  // flex-basis: 50%;
   overflow-y: auto;
   flex-direction: column;
   align-items: center;
+  padding: 0rem 1rem 1rem 1rem;
+  h1{
+    @include for-mobile{
+      font-size: --var(--dynamic-size-h1);
+    }
+  }
 }
 
 mat-grid-list {
@@ -42,4 +54,13 @@ mat-grid-tile mat-tab-group {
   justify-content: center;
   align-items: center;
   height: 100%;
+}
+
+#openParamBtn{
+  position: absolute;
+  right: 0;
+  width: 2rem;
+  height: 2rem;
+  font-size: 2rem;
+  margin: 1rem 1rem 0rem 0rem;
 }
