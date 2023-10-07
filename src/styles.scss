@@ -192,10 +192,14 @@ a {
 .mdc-tab__text-label{
   color: whitesmoke !important;
   font-weight: bold !important;
-  font-size: var(--dynamic-size-h1) !important;
-  @include for-mobile{
-    font-size: var(--dynamic-size-h1-mobile) !important;
+  font-size: 40px !important;
+  @include for-tablet{
+    font-size: 30px !important;
   }
+  @include for-mobile{
+    font-size: 30px !important;
+  }
+  // font-size: var(--dynamic-size-h1) !important;
 }
 
 .mdc-tab-indicator__content{
@@ -203,5 +207,8 @@ a {
 }
 
 #zone-h1{
-  font-size: var(--dynamic-size-zone-h1);
+  font-size: var(--dynamic-size-h1);
+  @include for-mobile{
+    font-size: var(--dynamic-size-h1-mobile);
+  }
 }

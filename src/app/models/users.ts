@@ -5,7 +5,6 @@ export class ParamMapInterface {
   public size_h1_mobile: number;
   public size_poste: number;
   public size_poste_mobile: number;
-  // public size_zone_h1: number;
 
   constructor(size_h1: number, size_h1_mobile: number, size_post: number, size_post_mobile: number) {
     this.size_h1 = size_h1;

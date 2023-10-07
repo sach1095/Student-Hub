@@ -8,6 +8,10 @@
 .poste-image {
   width: var(--dynamic-size-poste);
   height: var(--dynamic-size-poste);
+  @include for-tablet{
+    width: 2.5;
+    height: 2.5;
+  }
   @include for-mobile{
     width: var(--dynamic-size-poste-mobile);
     height: var(--dynamic-size-poste-mobile);
