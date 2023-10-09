@@ -57,24 +57,14 @@ exports.scheduledFetchStudentsConnected = pubsub.schedule('every 10 minutes').ti
 
 
             const filteredData = allData.filter(item => item.end_at === null);
+            const finalFilteredData = filteredData.filter(item => item.primary === true);
 
-            const latestUserEntries = filteredData.reduce((accum, item) => {
-              if (
-                !accum[item.user.login] ||
-                new Date(accum[item.user.login].begin_at) < new Date(item.begin_at)
-              ) {
-                accum[item.user.login] = item;
-              }
-              return accum;
-            }, {});
-
-            finalResponseData = Object.values(latestUserEntries).map(item => ({
+            finalResponseData = finalFilteredData.map(item => ({
               id: item.id,
               login: item.user.login,
               url: item.user.url,
-              img: item.user.image.url, // Faites attention à votre structure de données ici. Si c'est `item.user.image.link`, utilisez `.link`
+              img: item.user.image.link,
               host: item.host,
-              begin_at: item.begin_at, // Si vous voulez également enregistrer la date "begin_at"
             }));
         } catch (error) {
           throw new functions.https.HttpsError("internal ", "Failed to get Students Connected ", error);
