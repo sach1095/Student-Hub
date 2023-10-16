@@ -15,7 +15,7 @@ const pubsub = functions.pubsub;
 
 admin.initializeApp();
 
-exports.scheduledFetchStudentsConnected = pubsub.schedule('every 10 minutes').timeZone('Europe/Paris').onRun(async (context) => {
+exports.scheduledFetchStudentsConnected = pubsub.schedule('*/5 7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 * * *').timeZone('Europe/Paris').onRun(async (context) => {
 
     try {
         let finalResponseData;

@@ -17,9 +17,9 @@ export class AppComponent implements OnInit {
     return this.router.url;
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     try {
-      this.userService.initUserDatas();
+      await this.userService.initUserDatas();
     } catch (e) {}
   }
 }

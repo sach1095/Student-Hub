@@ -40,7 +40,7 @@ export class UserMatriceService {
 
   private shouldRefetch(lastFetchTime: Date): boolean {
     const now = new Date();
-    const nextFetchMinute = Math.ceil(now.getMinutes() / 10) * 10 + 2; // Gets the next full 10th minute + 1
+    const nextFetchMinute = Math.ceil(now.getMinutes() / 5) * 5 + 1; // Gets the next full 5th minute + 1
     const nextFetchTime = new Date(now);
     nextFetchTime.setMinutes(nextFetchMinute, 0, 0); // Sets next fetch time
 

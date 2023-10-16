@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { deleteDoc, Firestore, getDoc, setDoc } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { collection, doc, updateDoc } from '@firebase/firestore';
-import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable, ReplaySubject } from 'rxjs';
 import { ParamMapInterface, StrucCall, User } from 'src/app/models/users';
 import { StorageService } from './storage.service';
+import { IndexedDBService } from './indexed-db.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,7 @@ import { StorageService } from './storage.service';
 export class UserService {
   private usersCollection = collection(this.firestore, 'users');
   private _loggedUser = new BehaviorSubject<User | null>(null);
+  private _isInitCompleted = new ReplaySubject<boolean>(1);
   private _userDatas: User | null = null;
 
   private _isSomethingChanged = new BehaviorSubject<boolean>(false);
@@ -24,28 +26,25 @@ export class UserService {
     this._isSomethingChanged.next(value);
   }
 
-  constructor(private readonly firestore: Firestore, private storageService: StorageService, private router: Router) {}
+  constructor(private readonly firestore: Firestore, private indexedDBService: IndexedDBService, private storageService: StorageService, private router: Router) {}
 
   // ================= Handling logged in user ================= \\
   public async initUserDatas() {
     // on App init : load user datas from storage if exists and redirect to home page
-    const storageUser = this.storageService.getUser();
-    if (storageUser) {
-      this._userDatas = new User(
-        storageUser.id,
-        storageUser.name,
-        storageUser.login,
-        storageUser.type,
-        storageUser.urlImg,
-        storageUser.wallet,
-        storageUser.campus,
-        storageUser.year,
-        storageUser.strucCall,
-        storageUser.paramMap
-      );
+    const dbUser = await this.indexedDBService.getUser();
+    if (dbUser) {
+      this._userDatas = new User(dbUser.id, dbUser.name, dbUser.login, dbUser.type, dbUser.urlImg, dbUser.wallet, dbUser.campus, dbUser.year, dbUser.strucCall, dbUser.paramMap);
       this._loggedUser.next(this._userDatas);
       this.setUserData(this._userDatas.id);
+      this._isInitCompleted.next(true);
+    } else {
+      this._isInitCompleted.next(false);
+      this.router.navigate(['/login']);
     }
+  }
+
+  get isInitCompleted$(): Observable<boolean> {
+    return this._isInitCompleted.asObservable();
   }
 
   public async setUserData(uid: string): Promise<User | null> {
@@ -58,7 +57,7 @@ export class UserService {
         this.updateUserByUser(this._userDatas);
       }
       this._loggedUser.next(this._userDatas);
-      this.storageService.saveUser(this._userDatas);
+      await this.indexedDBService.saveUser(this._userDatas);
       return this._userDatas;
     }
     return null;
@@ -106,9 +105,9 @@ export class UserService {
   }
 
   public resetUser() {
-    localStorage.removeItem('user');
     this._userDatas = null;
     this._loggedUser.next(null);
+    this.indexedDBService.clearDatabase();
   }
 
   // ================= Handling application users ================= \\
@@ -140,7 +139,7 @@ export class UserService {
         new ParamMapInterface(userdb.paramMap.size_h1, userdb.paramMap.size_h1_mobile, userdb.paramMap.size_poste, userdb.paramMap.size_poste_mobile)
       );
       this._loggedUser.next(user);
-      this.storageService.saveUser(user);
+      await this.indexedDBService.saveUser(user);
     } catch (error) {
       console.error('User.service : createUser : ', error);
     }
@@ -156,7 +155,7 @@ export class UserService {
       } catch (error) {
         console.error('User.service : update : ', error);
       }
-      this.storageService.saveUser(user);
+      await this.indexedDBService.saveUser(user);
     }
   }
 
@@ -168,7 +167,7 @@ export class UserService {
       } catch (error) {
         console.error('User.service : update : ', error);
       }
-      this.storageService.saveUser(user);
+      await this.indexedDBService.saveUser(user);
     }
   }
 

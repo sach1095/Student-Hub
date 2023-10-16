@@ -62,6 +62,15 @@ export class LogtimeUtils {
         oldTimeTotals[yearMonthKey].total = `${parseInt(totalHours)}h${totalMinutes.padStart(2, '0')}`;
       }
     }
+
+    // Boucle sur oldTimeTotals pour s'assurer que 'heuresAFaires' est défini pour chaque mois.
+    for (const yearMonth in oldTimeTotals) {
+      if (oldTimeTotals.hasOwnProperty(yearMonth)) {
+        if (oldTimeTotals[yearMonth].heuresAFaires === undefined) {
+          oldTimeTotals[yearMonth].heuresAFaires = 0; // Définissez à 0 si 'heuresAFaires' n'est pas défini
+        }
+      }
+    }
     return oldTimeTotals;
   }
 

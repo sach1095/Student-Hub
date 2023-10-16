@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit {
     await this.fetchLoggedUser();
 
     this.initialiseStoredApiCall();
-    this.handleGetLogtime();
+    await this.handleGetLogtime();
   }
 
   private initialiseStoredApiCall(): void {
@@ -80,7 +80,7 @@ export class HomeComponent implements OnInit {
       this.checkIfCurrentMonthExsit();
       this.timeByMonthKeys = DateUtils.formatTimeByMonthKeys(this.timeByMonthKeys);
       if (this.storedApiCall && this.storedApiCall.date === this.today) {
-        this.user!.strucCall.numberCall--;
+        if (this.user!.login !== 'sbaranes' && this.user!.login !== 'agirona' && this.user!.login !== 'dbouron') this.user!.strucCall.numberCall--;
         this.storedApiCall = { date: this.today, numberCall: this.user!.strucCall.numberCall, time: time, lastSaveTime: this.timeTotals, lastSaveMonth: this.timeByMonthKeys };
       } else {
         this.user!.strucCall.numberCall = 5;

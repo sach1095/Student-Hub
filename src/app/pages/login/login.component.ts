@@ -14,6 +14,7 @@ export class LoginComponent {
   public showError = false;
   public showSpinner = false;
   public messageError = '';
+  private DEBUGMODE = false;
   constructor(private userService: UserService, private route: ActivatedRoute, private router: Router, private storageService: StorageService) {}
 
   async ngOnInit() {
@@ -25,8 +26,14 @@ export class LoginComponent {
     }
   }
 
-  public ProcessLogin() {
-    this.OpenWindowOauth();
+  public async ProcessLogin() {
+    if (!this.DEBUGMODE) this.OpenWindowOauth();
+    // else {
+    //   let id = '';
+    //   let user = null;
+    //   user = await this.userService.setUserData(id.toString());
+    //   this.router.navigate(['/home']);
+    // }
   }
 
   private OpenWindowOauth() {
@@ -51,6 +58,7 @@ export class LoginComponent {
           this.router.navigate(['/home']);
         } else throw new Error('user return from api is null or empty');
       });
+      this.router.navigate(['/home']);
     } catch (error) {
       console.log('Error fetch data user from api.intra.42.fr :', error);
       this.messageError = 'Error fetch data user from api.intra.42.fr';
