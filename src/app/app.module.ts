@@ -26,6 +26,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { ParamMapComponent } from './pages/matrice/param-map/param-map.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CustomTooltipComponent } from './pages/matrice/custom-tooltip/custom-tooltip.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     RangerComponent,
     ZoneComponent,
     ParamMapComponent,
+    CustomTooltipComponent,
   ],
   imports: [
     BrowserModule,

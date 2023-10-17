@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ParamMapComponent } from './param-map.component';
+import { ParamMapComponent } from '../param-map/param-map.component';
 
 describe('ParamMapComponent', () => {
   let component: ParamMapComponent;
@@ -8,9 +8,8 @@ describe('ParamMapComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ParamMapComponent ]
-    })
-    .compileComponents();
+      declarations: [ParamMapComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ParamMapComponent);
     component = fixture.componentInstance;

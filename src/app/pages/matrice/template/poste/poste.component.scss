@@ -35,3 +35,16 @@
 .poste-number {
   margin-top: 5px;
 }
+.poste-container {
+  position: relative;
+}
+
+.tooltip-content {
+  position: absolute;
+  z-index: 1001; /* pour s'assurer qu'elle est au-dessus d'autres éléments */
+}
+
+.poste-container.highlighted {
+  border: 2px solid yellow;
+  border-radius: 10px;
+}

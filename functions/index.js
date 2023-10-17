@@ -65,6 +65,7 @@ exports.scheduledFetchStudentsConnected = pubsub.schedule('*/5 7,8,9,10,11,12,13
               url: item.user.url,
               img: item.user.image.link,
               host: item.host,
+              displayName: item.user.displayname,
             }));
         } catch (error) {
           throw new functions.https.HttpsError("internal ", "Failed to get Students Connected ", error);

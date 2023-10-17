@@ -1,0 +1,11 @@
+<article class="profile">
+    <div class="profile-image">
+        <img src="{{ poste.user?.img }}" />
+    </div>
+    <h1 class="profile-username">{{ poste.user?.login }}</h1>
+    <small class="profile-user-handle">{{ poste.user?.displayName }}</small>
+    <small class="profile-user-handle">{{ poste.user?.host }}</small>
+    <div class="profile-actions">
+        <button mat-fab extended color="primary" (click)="navigateToUser()">Intra</button>
+    </div>
+</article>

@@ -8,9 +8,29 @@ import { Poste } from 'src/app/models/matrice';
 })
 export class PosteComponent {
   @Input() poste!: Poste;
+  public showTooltip = false;
+  public tooltipTimeout?: any; // Pour stocker le timer
 
-  public navigateToUser() {
-    const url = `https://profile.intra.42.fr/users/${this.poste.user?.login}`;
-    if (this.poste.user) window.open(url, '_blank');
+  onMouseEnter() {
+    if (this.poste.occupe) {
+      this.showTooltip = true;
+      // Annuler le précédent timeout si l'utilisateur survole à nouveau avant la disparition
+      if (this.tooltipTimeout) {
+        clearTimeout(this.tooltipTimeout);
+      }
+    }
+  }
+
+  onMouseLeave() {
+    // Commence le délai pour cacher l'infobulle
+    // this.tooltipTimeout = setTimeout(() => {
+    this.showTooltip = false;
+    // }, 1000); // Délai avant de cacher l'infobulle, ici 1000 millisecondes soit 1 secondes
+  }
+
+  ngOnDestroy() {
+    if (this.tooltipTimeout) {
+      clearTimeout(this.tooltipTimeout);
+    }
   }
 }

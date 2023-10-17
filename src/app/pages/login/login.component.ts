@@ -14,11 +14,11 @@ export class LoginComponent {
   public showError = false;
   public showSpinner = false;
   public messageError = '';
-  private DEBUGMODE = false;
+  private DEBUGMODE = true;
   constructor(private userService: UserService, private route: ActivatedRoute, private router: Router, private storageService: StorageService) {}
 
   async ngOnInit() {
-    let code = '';
+    let code = '78541';
     this.route.queryParams.subscribe((params: any) => (code = params.code));
     if (code) {
       this.showSpinner = true;
@@ -28,12 +28,12 @@ export class LoginComponent {
 
   public async ProcessLogin() {
     if (!this.DEBUGMODE) this.OpenWindowOauth();
-    // else {
-    //   let id = '';
-    //   let user = null;
-    //   user = await this.userService.setUserData(id.toString());
-    //   this.router.navigate(['/home']);
-    // }
+    else {
+      let id = '';
+      let user = null;
+      user = await this.userService.setUserData(id.toString());
+      this.router.navigate(['/home']);
+    }
   }
 
   private OpenWindowOauth() {

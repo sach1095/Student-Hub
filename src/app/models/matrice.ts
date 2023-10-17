@@ -4,6 +4,7 @@ export interface UserMatrice {
   img: String;
   host: String;
   login: String;
+  displayName: String;
 }
 
 export interface Poste {

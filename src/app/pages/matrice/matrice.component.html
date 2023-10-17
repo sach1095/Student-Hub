@@ -1,3 +1,24 @@
+<div class="inputSerach">
+    <mat-form-field appearance="fill">
+        <mat-label>Rechercher par login</mat-label>
+        <input
+            matInput
+            class="input"
+            type="text"
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="search()"
+            [matAutocomplete]="auto"
+            (keyup.enter)="showUserSeleted()"
+            aria-label="Rechercher par login"
+        />
+        <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let user of filteredUsers" [value]="user.login" (click)="showUserSeletedOnClick(user)">
+                {{ user.login }}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+</div>
+
 <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectedIndexChange)="tabChanged($event)" *ngIf="showMatrice">
     <mat-tab label="I0">
         <div class="zones-wrapper">
