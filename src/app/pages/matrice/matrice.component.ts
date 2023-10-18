@@ -23,7 +23,8 @@ export class MatriceComponent implements OnInit {
   public windowWidth: number = window.innerWidth;
   public searchTerm: string = '';
   public filteredUsers: UserMatrice[] | null | undefined = [];
-  @ViewChildren('posteRef') postes!: QueryList<ElementRef>;
+  public postes: ElementRef[] = [];
+  public isLoading: boolean = false;
 
   constructor(private userService: UserService, private storageService: StorageService, private userMatriceService: UserMatriceService, private readonly dialog: MatDialog) {}
 
@@ -34,7 +35,9 @@ export class MatriceComponent implements OnInit {
     if (this.usersMatrice) this.matrice = new Matrice(this.usersMatrice);
     else console.error('userMatrice error instanciated, please reload page');
     this.showMatrice = true;
-    this.postes.changes.subscribe();
+    this.userMatriceService.getPosteList().subscribe((postes) => {
+      this.postes = postes;
+    });
   }
 
   private async fetchLoggedUser() {
@@ -57,11 +60,7 @@ export class MatriceComponent implements OnInit {
       // Si le terme de recherche n'est pas valide, retourner tous les utilisateurs
       this.filteredUsers = this.usersMatrice;
     } else {
-      // Sinon, filtrer le dataset
-      // if (this.usersMatrice && this.usersMatrice?.length > 0)
       this.filteredUsers = this.usersMatrice!.filter((user) => user.login.toLowerCase().includes(this.searchTerm.toLowerCase()));
-      console.log('this.filteredUsers');
-      console.log(this.filteredUsers);
     }
   }
 
@@ -93,29 +92,33 @@ export class MatriceComponent implements OnInit {
   }
 
   showUserSeletedOnClick(user: UserMatrice) {
-    console.log('showUserSeletedOnClick');
-    console.log(user);
-    this.scrollToPoste(user.login.toString());
+    this.scrollToPoste(user);
   }
+
   showUserSeleted() {
-    console.log('showUserSeleted');
-    console.log(this.filteredUsers);
-    if (this.filteredUsers) this.scrollToPoste(this.filteredUsers[0].login.toString());
+    if (this.filteredUsers) this.scrollToPoste(this.filteredUsers[0]);
   }
 
-  scrollToPoste(login: string): void {
-    console.log('scrollToPoste');
-    console.log(login);
-    console.log('this.postes elemet');
-    console.log(this.postes);
-    const posteElement = this.postes.find((poste) => poste.nativeElement.id === login)?.nativeElement;
-    console.log('scrollToPoste elemet');
-    console.log(posteElement);
-    if (posteElement) {
-      posteElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  checkIfNeedChangeIndex(host: String) {
+    const match = host.match(/z(\d+)r(\d+)p(\d+)/);
+    const [, z, r, p] = match!.map(Number);
+    if (z === 1 || z === 2) this.selectedTabIndex = 0;
+    else this.selectedTabIndex = 1;
+  }
 
-      // Ajoutez une classe pour mettre en surbrillance le poste (par exemple avec une bordure jaune)
+  scrollToPoste(user: UserMatrice): void {
+    this.isLoading = true;
+    this.checkIfNeedChangeIndex(user.host);
+    const posteElement = this.postes.find((poste) => poste.nativeElement.id === user.login)?.nativeElement;
+    if (posteElement) {
+      setTimeout(() => {
+        this.isLoading = false;
+        posteElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 1000);
       posteElement.classList.add('highlighted');
+      setTimeout(() => {
+        posteElement.classList.remove('highlighted');
+      }, 5000);
     }
   }
 }

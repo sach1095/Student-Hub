@@ -1,4 +1,4 @@
-<div class="poste-container" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+<div class="poste-container" #posteRef [attr.id]="poste.user?.login" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
     <div class="poste">
         <div class="poste-image">
             <div *ngIf="poste.user?.img; else noImage" [style.background-image]="'url(' + poste.user?.img + ')'" class="user-image"></div>
@@ -10,7 +10,14 @@
             {{ poste.poste }}
         </div>
     </div>
-    <div class="tooltip-content" *ngIf="showTooltip">
+    <div
+        class="tooltip-content"
+        [class.top]="tooltipPosition === 'top'"
+        [class.right]="tooltipPosition === 'right'"
+        [class.bottom]="tooltipPosition === 'bottom'"
+        [class.left]="tooltipPosition === 'left'"
+        *ngIf="showTooltip"
+    >
         <app-custom-tooltip [poste]="poste"></app-custom-tooltip>
     </div>
 </div>

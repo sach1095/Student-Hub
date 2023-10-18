@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { ElementRef, Injectable } from '@angular/core';
 import { Firestore, getDoc } from '@angular/fire/firestore';
 import { collection, doc } from '@firebase/firestore';
 import { StorageService } from './storage.service';
 import { UserMatrice } from '../models/matrice';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,8 @@ export class UserMatriceService {
   private languageCollection = collection(this.firestore, 'matrice');
   private userMatrice: UserMatrice[] = [];
   private lastFetchTime?: Date;
+  private posteListSubject = new BehaviorSubject<ElementRef[]>([]);
+
   constructor(private readonly firestore: Firestore, private storageService: StorageService) {}
 
   private async fetchUsersMatriceLog() {
@@ -46,5 +49,17 @@ export class UserMatriceService {
 
     // If last fetch time is before the next fetch time and current time is after the next fetch time, refetch.
     return lastFetchTime < nextFetchTime && now >= nextFetchTime;
+  }
+
+  // Permet aux composants de souscrire à la liste des postes
+  getPosteList(): Observable<ElementRef[]> {
+    return this.posteListSubject.asObservable();
+  }
+
+  // Permet aux composants d'ajouter un poste à la liste
+  addPoste(poste: ElementRef): void {
+    const currentPostes = this.posteListSubject.getValue();
+    currentPostes.push(poste);
+    this.posteListSubject.next(currentPostes);
   }
 }

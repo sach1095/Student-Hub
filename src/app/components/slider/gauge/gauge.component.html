@@ -14,7 +14,7 @@
     <div *ngIf="inputHourStatus">
         <span id="edit-line">
             <div class="field">
-                <input matInput type="text" [(ngModel)]="inputHour" (keyup.enter)="setHour(true)" [placeholder]="'Set 0 for reset'" />
+                <input matInput maxlength="3" type="text" [(ngModel)]="inputHour" (keyup.enter)="setHour(true)" [placeholder]="'Set 0 for reset'" />
                 <div class="line"></div>
             </div>
             <mat-icon (click)="setHour(true)">check</mat-icon>

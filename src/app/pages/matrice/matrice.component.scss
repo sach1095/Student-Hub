@@ -1,6 +1,5 @@
 @import 'src/scss/breakpoints.scss';
 
-
 .matrice {
   display: flex;
   flex-direction: column;
@@ -69,4 +68,14 @@ mat-grid-tile mat-tab-group {
 .inputSerach{
   display: flex;
   justify-content: center;
+  position: relative;
+  padding-top: 1.5rem;
+  background-color: transparent;
+}
+
+.spinner-container {
+  position: absolute;
+  top: 50%; /* centrer verticalement */
+  right: 10px; /* déplacer légèrement du bord droit */
+  transform: translateY(-50%); /* ajustement fin du centrage vertical */
 }

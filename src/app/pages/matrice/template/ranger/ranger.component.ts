@@ -10,10 +10,4 @@ import { ViewChildren, QueryList, ElementRef } from '@angular/core';
 export class RangerComponent {
   @Input() ranger!: Ranger;
   @Input() zoneIndex!: number;
-  @ViewChildren('posteRef') postes!: QueryList<ElementRef>;
-
-  ngAfterViewInit() {
-    console.log('scrollToPoste elemet ranger');
-    console.log(this.postes);
-  }
 }

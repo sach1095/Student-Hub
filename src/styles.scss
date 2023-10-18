@@ -199,7 +199,6 @@ a {
   @include for-mobile{
     font-size: 30px !important;
   }
-  // font-size: var(--dynamic-size-h1) !important;
 }
 
 .mdc-tab-indicator__content{
@@ -216,3 +215,62 @@ a {
 .mat-mdc-option .mdc-list-item__primary-text{
   color: black !important;
 }
+
+.mdc-text-field {
+  border-bottom-left-radius: var(--mdc-shape-small, 4px) !important;
+  border-bottom-right-radius: var(--mdc-shape-small, 4px) !important;
+}
+
+.mat-mdc-form-field .mat-mdc-floating-label.mdc-floating-label {
+  color: whitesmoke !important;
+  border-color: whitesmoke !important;
+}
+
+// Overide for matInput and set hour color
+.mdc-notched-outline__leading {
+  border-color: whitesmoke !important;
+}
+.mdc-notched-outline__notch{
+  border-color: whitesmoke !important;
+}
+
+.mdc-notched-outline__trailing{
+  border-color: whitesmoke !important;
+}
+
+.mat-form-field.mat-focused .mat-form-field-ripple {
+  background-color: var(--Student-Hub-btn) !important;
+}
+
+.mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused.mdc-notched-outline__trailing{
+  border-color: var(--Student-Hub-btn) !important;
+}
+
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading{
+  border-color: whitesmoke;
+
+}
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch{
+
+  border-color: whitesmoke;
+}
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing{
+  border-color: whitesmoke;
+}
+.mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__leading{
+
+  border-color: var(--Student-Hub-btn) !important;
+}
+.mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__notch{
+
+  border-color: var(--Student-Hub-btn) !important;
+}
+.mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__trailing
+{
+  border-color: var(--Student-Hub-btn) !important;
+}
+
+
+// class="mdc-notched-outline ng-tns-c13-1 mdc-notched-outline--upgraded ng-star-inserted"
+
+// class="mdc-notched-outline ng-tns-c13-1 mdc-notched-outline--upgraded ng-star-inserted mdc-notched-outline--notched"

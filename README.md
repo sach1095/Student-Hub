@@ -27,6 +27,7 @@ Refere to https://www.npmjs.com/package/firebase-tools for more Command-Line Usa
 
 For set up your app credantial do :
 firebase functions:config:set api.client_id="your_client_id" api.client_secret="your_client_secret"
+firebase functions:config:set api.client_id="u-s4t2ud-45573df269eb8ad26466e16b8f407d8e5dc14447411f6f3307df1ae7faf6b2e9" api.client_secret="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"
 
 ## Firebase Firestore
 
