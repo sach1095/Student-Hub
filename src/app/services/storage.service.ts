@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { User } from '../models/users';
-import { UserMatrice } from '../models/matrice';
+import { Matrice } from '../models/matrice';
 
 @Injectable({
   providedIn: 'root',
@@ -26,12 +26,12 @@ export class StorageService {
     localStorage.setItem(this._storageMatriceIndex, JSON.stringify(user));
   }
 
-  public getUsersMatrice(): UserMatrice[] | null {
+  public getUsersMatrice(): Matrice | null {
     const users = localStorage.getItem(this._storageUsersMatrice);
     return users ? JSON.parse(users) : null;
   }
 
-  public saveUsersMatrice(usersMatrice: UserMatrice[]) {
+  public saveUsersMatrice(usersMatrice: Matrice) {
     localStorage.setItem(this._storageUsersMatrice, JSON.stringify(usersMatrice));
   }
 }

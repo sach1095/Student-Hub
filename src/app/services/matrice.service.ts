@@ -2,7 +2,7 @@ import { ElementRef, Injectable } from '@angular/core';
 import { Firestore, getDoc } from '@angular/fire/firestore';
 import { collection, doc } from '@firebase/firestore';
 import { StorageService } from './storage.service';
-import { UserMatrice } from '../models/matrice';
+import { Matrice, UserMatrice } from '../models/matrice';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -10,35 +10,34 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class UserMatriceService {
   private languageCollection = collection(this.firestore, 'matrice');
-  private userMatrice: UserMatrice[] = [];
+  private matrice?: Matrice;
   private lastFetchTime?: Date;
   private posteListSubject = new BehaviorSubject<ElementRef[]>([]);
 
   constructor(private readonly firestore: Firestore, private storageService: StorageService) {}
 
-  private async fetchUsersMatriceLog() {
-    const docRef = doc(this.languageCollection, 'usersLog');
+  private async fetchMatrice() {
+    const docRef = doc(this.languageCollection, 'matriceData');
     const docSnap = await getDoc(docRef);
     if (!docSnap.exists()) {
       throw new Error('could not fetch users Connected');
     }
-    this.userMatrice = docSnap.get('finalResponseData');
+    let data = docSnap.data();
+    this.matrice = JSON.parse(data['matriceData']);
     this.lastFetchTime = new Date();
-    this.storageService.saveUsersMatrice(this.userMatrice);
-    return this.userMatrice;
+    if (this.matrice) this.storageService.saveUsersMatrice(this.matrice);
+    return this.matrice;
   }
 
-  public async getUsers(): Promise<UserMatrice[]> {
+  public async getUsers(): Promise<Matrice | undefined> {
     if (!this.lastFetchTime || this.shouldRefetch(this.lastFetchTime)) {
-      return this.fetchUsersMatriceLog();
+      return this.fetchMatrice();
     }
-
-    if (this.userMatrice.length === 0) return this.fetchUsersMatriceLog();
 
     const storedUsersMatrice = this.storageService.getUsersMatrice();
     if (storedUsersMatrice) return storedUsersMatrice;
 
-    return this.fetchUsersMatriceLog();
+    return this.fetchMatrice();
   }
 
   private shouldRefetch(lastFetchTime: Date): boolean {

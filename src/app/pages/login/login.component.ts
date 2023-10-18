@@ -14,11 +14,11 @@ export class LoginComponent {
   public showError = false;
   public showSpinner = false;
   public messageError = '';
-  private DEBUGMODE = true;
+  private DEBUGMODE = false;
   constructor(private userService: UserService, private route: ActivatedRoute, private router: Router, private storageService: StorageService) {}
 
   async ngOnInit() {
-    let code = '78541';
+    let code = '';
     this.route.queryParams.subscribe((params: any) => (code = params.code));
     if (code) {
       this.showSpinner = true;
