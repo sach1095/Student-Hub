@@ -36,6 +36,18 @@ export class MatriceComponent implements OnInit {
     this.userMatriceService.getPosteList().subscribe((postes) => {
       this.postes = postes;
     });
+    this.usersMatrice = [];
+    if (this.matrice) {
+      this.matrice.zones.forEach((zone) => {
+        zone.rangers.forEach((ranger) => {
+          ranger.postes.forEach((poste) => {
+            if (poste.user) {
+              this.usersMatrice!.push(poste.user);
+            }
+          });
+        });
+      });
+    }
   }
 
   private async fetchLoggedUser() {
