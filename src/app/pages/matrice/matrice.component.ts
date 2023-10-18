@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/models/users';
 import { filter, firstValueFrom, tap } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
@@ -7,7 +7,7 @@ import { StorageService } from 'src/app/services/storage.service';
 import { UserMatriceService } from 'src/app/services/matrice.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ParamMapComponent } from './param-map/param-map.component';
-import { ViewChildren, QueryList, ElementRef } from '@angular/core';
+import { ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-matrice',
@@ -30,10 +30,8 @@ export class MatriceComponent implements OnInit {
 
   async ngOnInit() {
     await this.fetchLoggedUser();
-    await this.fetchUsersMatrice();
+    await this.fetchMatrice();
     this.selectedTabIndex = this.storageService.getMatriceIndex() || 0;
-    if (this.usersMatrice) this.matrice = new Matrice(this.usersMatrice);
-    else console.error('userMatrice error instanciated, please reload page');
     this.showMatrice = true;
     this.userMatriceService.getPosteList().subscribe((postes) => {
       this.postes = postes;
@@ -51,8 +49,8 @@ export class MatriceComponent implements OnInit {
     }
   }
 
-  async fetchUsersMatrice() {
-    this.usersMatrice = await this.userMatriceService.getUsers();
+  async fetchMatrice() {
+    this.matrice = await this.userMatriceService.getUsers();
   }
 
   public search(): void {
