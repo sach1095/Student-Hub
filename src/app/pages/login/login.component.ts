@@ -14,7 +14,7 @@ export class LoginComponent {
   public showError = false;
   public showSpinner = false;
   public messageError = '';
-  private DEBUGMODE = false;
+  private DEBUGMODE = true;
   constructor(private userService: UserService, private route: ActivatedRoute, private router: Router, private storageService: StorageService) {}
 
   async ngOnInit() {
@@ -29,7 +29,7 @@ export class LoginComponent {
   public async ProcessLogin() {
     if (!this.DEBUGMODE) this.OpenWindowOauth();
     else {
-      let id = '';
+      let id = '78541';
       let user = null;
       user = await this.userService.setUserData(id.toString());
       this.router.navigate(['/home']);
@@ -55,19 +55,17 @@ export class LoginComponent {
         if (userData.id) {
           console.log(`Success login to api.intra.42.fr`);
           await this.proccessLoginUser(userData);
-          while (true) {
-            setTimeout(() => {
-              this.router.navigate(['/home']);
-            }, 1000);
-          }
+          this.router.navigate(['/home']);
         } else throw new Error('user return from api is null or empty');
       });
+      this.router.navigate(['/home']);
     } catch (error) {
       console.log('Error fetch data user from api.intra.42.fr :', error);
       this.messageError = 'Error fetch data user from api.intra.42.fr';
       this.showError = true;
       this.showSpinner = false;
     }
+    this.router.navigate(['/home']);
   }
 
   private async proccessLoginUser(userData: any) {

@@ -23,7 +23,7 @@
     </mat-form-field>
 </div>
 
-<mat-tab-group #parent [(selectedIndex)]="selectedTabIndex" (selectedIndexChange)="tabChanged($event)" *ngIf="showMatrice">
+<mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectedIndexChange)="tabChanged($event)" *ngIf="showMatrice">
     <mat-tab label="I0">
         <div class="zones-wrapper">
             <mat-icon id="openParamBtn" (click)="openParamMap()">settings</mat-icon>

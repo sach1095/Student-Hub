@@ -42,6 +42,7 @@ export class LogtimeUtils {
           details: {},
           total: '',
           heuresAFaires: 0,
+          heuresDistantiel: 0,
         };
       }
 
@@ -68,6 +69,9 @@ export class LogtimeUtils {
       if (oldTimeTotals.hasOwnProperty(yearMonth)) {
         if (oldTimeTotals[yearMonth].heuresAFaires === undefined) {
           oldTimeTotals[yearMonth].heuresAFaires = 0; // Définissez à 0 si 'heuresAFaires' n'est pas défini
+        }
+        if (oldTimeTotals[yearMonth].heuresDistantiel === undefined) {
+          oldTimeTotals[yearMonth].heuresDistantiel = 0; // Définissez à 0 si 'heuresDistantiel' n'est pas défini
         }
       }
     }
