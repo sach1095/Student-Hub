@@ -56,7 +56,7 @@ export class PosteComponent implements AfterViewInit {
   onMouseLeave() {
     // Commence le délai pour cacher l'infobulle
     // this.tooltipTimeout = setTimeout(() => {
-    // this.showTooltip = false;
+    this.showTooltip = false;
     // }, 5000); // Délai avant de cacher l'infobulle, ici 1000 millisecondes soit 1 secondes
   }
 
