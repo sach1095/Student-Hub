@@ -82,7 +82,7 @@ export class MatriceComponent implements OnInit {
     const dialogRef = this.dialog.open(ParamMapComponent, {
       data: { paramMap: this.user!.paramMap },
     });
-
+    // this.parent.getElementById(this.matrice.find(chld=)).scrollIntoView();
     dialogRef
       .afterClosed()
       .pipe(
