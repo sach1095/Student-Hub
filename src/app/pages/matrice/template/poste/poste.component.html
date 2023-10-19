@@ -12,10 +12,10 @@
     </div>
     <div
         class="tooltip-content"
-        [class.top]="tooltipPosition === 'top'"
-        [class.right]="tooltipPosition === 'right'"
-        [class.bottom]="tooltipPosition === 'bottom'"
-        [class.left]="tooltipPosition === 'left'"
+        [class.top-left]="tooltipPosition === 'top-left'"
+        [class.top-right]="tooltipPosition === 'top-right'"
+        [class.bottom-left]="tooltipPosition === 'bottom-left'"
+        [class.bottom-right]="tooltipPosition === 'bottom-right'"
         *ngIf="showTooltip"
     >
         <app-custom-tooltip [poste]="poste"></app-custom-tooltip>

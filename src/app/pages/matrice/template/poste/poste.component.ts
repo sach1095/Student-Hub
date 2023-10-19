@@ -12,7 +12,9 @@ export class PosteComponent implements AfterViewInit {
   @Input() poste!: Poste;
   public showTooltip = false;
   public tooltipTimeout?: any; // Pour stocker le timer
-  public tooltipPosition: 'top' | 'bottom' | 'left' | 'right' = 'top';
+  public tooltipPosition = '';
+  public tooltipPositionVert: 'top' | 'bottom' = 'top';
+  public tooltipPositionHoriz: 'left' | 'right' = 'left';
 
   constructor(private userMatriceService: UserMatriceService) {}
 
@@ -32,35 +34,29 @@ export class PosteComponent implements AfterViewInit {
   }
 
   calculateTooltipPosition() {
-    // Obtenir les coordonnées de l'élément
-    const rect = this.posteRef.nativeElement.getBoundingClientRect();
-
-    // Variables pour déterminer l'espace disponible dans toutes les directions
-    const spaceTop = rect.top;
-    const spaceBottom = window.innerHeight - rect.bottom;
-    const spaceLeft = rect.left;
-    const spaceRight = window.innerWidth - rect.right;
-
-    // Déterminez la taille de votre infobulle, assurez-vous que ces valeurs correspondent à vos besoins
-    const tooltipHeight = 400; // ou toute autre valeur basée sur la hauteur réelle de votre infobulle
-    const tooltipWidth = 320; // ou toute autre valeur basée sur la largeur réelle de votre infobulle
-
-    // Logique pour déterminer la position de l'infobulle
-    if (spaceBottom < tooltipHeight + 200 && spaceTop > tooltipHeight) {
-      this.tooltipPosition = 'top';
-    } else if (spaceRight < tooltipWidth && spaceLeft > tooltipWidth) {
-      this.tooltipPosition = 'left';
-    } else if (spaceLeft < tooltipWidth && spaceRight > tooltipWidth) {
-      this.tooltipPosition = 'right';
+    // Vérifiez si 'ranger' est supérieur à 9 pour déterminer la position verticale
+    if (this.poste.ranger > 9) {
+      this.tooltipPositionVert = 'top';
     } else {
-      this.tooltipPosition = 'bottom'; // position par défaut
+      this.tooltipPositionVert = 'bottom';
     }
+
+    // Vérifiez si 'poste' est supérieur ou égal à 4 pour déterminer la position horizontale
+    if (this.poste.poste >= 4) {
+      this.tooltipPositionHoriz = 'right';
+    } else {
+      this.tooltipPositionHoriz = 'left';
+    }
+
+    // Combine les positions verticale et horizontale pour obtenir la position finale de l'infobulle
+    // Ceci est utile si votre système de tooltip prend en charge des positions comme 'top-right', 'bottom-left', etc.
+    this.tooltipPosition = `${this.tooltipPositionVert}-${this.tooltipPositionHoriz}`;
   }
 
   onMouseLeave() {
     // Commence le délai pour cacher l'infobulle
     // this.tooltipTimeout = setTimeout(() => {
-    this.showTooltip = false;
+    // this.showTooltip = false;
     // }, 5000); // Délai avant de cacher l'infobulle, ici 1000 millisecondes soit 1 secondes
   }
 

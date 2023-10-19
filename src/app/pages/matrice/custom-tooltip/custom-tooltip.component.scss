@@ -77,8 +77,8 @@ a {
 .profile-image {
 	border-radius: 50%;
 	overflow: hidden;
-	width: 100px;
-	height: 100px;
+	width: 150px;
+	height: 150px;
   @include for-mobile{
     width: 90px;
     height: 90px;
@@ -95,7 +95,7 @@ a {
 }
 
 .profile-username {
-	font-size: 1.2rem;
+	font-size: 1.3rem;
 	font-weight: 600;
 	margin-top: 1.5rem;
 }

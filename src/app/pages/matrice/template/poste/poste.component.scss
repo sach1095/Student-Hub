@@ -41,31 +41,34 @@
 
 .tooltip-content {
   position: absolute;
-  z-index: 1001; /* pour s'assurer qu'elle est au-dessus d'autres éléments */
+  z-index: 1001; // pour s'assurer qu'elle est au-dessus d'autres éléments
 
-  &.top {
+  &.top-left {
     bottom: 100%;
     left: 50%;
-    transform: translateX(-35%);
+    transform: translateX(-66%);
   }
 
-  &.right {
-    top: 50%;
-    left: 100%;
-    transform: translateY(-36%);
+  &.top-right {
+    bottom: 100%;
+    left: auto;
+    right: 50%;
+    transform: translateX(77%);
   }
 
-  &.bottom {
+  &.bottom-left {
     top: 100%;
     left: 50%;
-    transform: translateX(-44%);
+    transform: translateX(-66%);
   }
 
-  &.left {
-    top: 50%;
-    right: 100%;
-    transform: translateY(-15%);
+  &.bottom-right {
+    top: 100%;
+    left: auto;
+    right: 50%;
+    transform: translateX(77%);
   }
+
 }
 
 .poste-container.highlighted {
