@@ -55,10 +55,13 @@ export class LoginComponent {
         if (userData.id) {
           console.log(`Success login to api.intra.42.fr`);
           await this.proccessLoginUser(userData);
-          this.router.navigate(['/home']);
+          while (true) {
+            setTimeout(() => {
+              this.router.navigate(['/home']);
+            }, 1000);
+          }
         } else throw new Error('user return from api is null or empty');
       });
-      this.router.navigate(['/home']);
     } catch (error) {
       console.log('Error fetch data user from api.intra.42.fr :', error);
       this.messageError = 'Error fetch data user from api.intra.42.fr';
