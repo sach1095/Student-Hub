@@ -23,7 +23,7 @@ export class HomeComponent implements OnInit {
   private today = new Date().toLocaleDateString();
   private tempTimeUpdates: any[] = [];
   private currentMonthBeingProcessed: string | null = null;
-
+  isAlternant = false;
   constructor(private userService: UserService) {}
 
   async ngOnInit() {
@@ -68,6 +68,13 @@ export class HomeComponent implements OnInit {
 
   private async fetchLoggedUser() {
     this.user = await firstValueFrom(this.userService.getLoggedUser());
+  }
+
+  public async test() {
+    var test;
+    test = await LogtimeUtils.getLogtime(this.user!.login, this.timeTotals || {});
+    console.log('test final');
+    console.log(test);
   }
 
   public async processGetLogtime() {
