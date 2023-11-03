@@ -202,78 +202,39 @@ try {
       }
 });
 
-exports.getLogtimeV2 = onCall(async (request) => {
-  try {
-    const { client_id } = request.data;
-    const { client_secret } = request.data;
-
-    const params = new URLSearchParams();
-    params.append('grant_type', 'client_credentials');
-    params.append('client_id', client_id);
-    params.append('client_secret', client_secret);
-
-        // Recuperation token permetant de faire des requette pour le user.
-        const rep = await fetch('https://api.intra.42.fr/oauth/token', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: params.toString()
-        });
-
-        let temp = await rep.json();
-
-      const { access_token } = temp;
-      const { login } = request.data;
-
-    const queryParams1 = new URLSearchParams({
-      access_token: access_token,
-    });
-
-    const dataResponse = await fetch(`https://api.intra.42.fr/v2/users/${login}/locations_stats?${queryParams1.toString()}`);
-
-    const responseData = await dataResponse.json();
-
-    return responseData;
-  } catch (error) {
-    throw new functions.https.HttpsError("internal ", "Failed to get user LogtimesV2 ", error);
-  }
-});
-
-// old function get logtime
 exports.getLogtime = onCall(async (request) => {
   try {
     const { client_id } = request.data;
     const { client_secret } = request.data;
     const params = new URLSearchParams();
-        params.append('grant_type', 'client_credentials');
-        params.append('client_id', client_id);
-        params.append('client_secret', client_secret);
-        // Recuperation token permetant de faire des requette pour le user.
-        const rep = await fetch('https://api.intra.42.fr/oauth/token', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+    params.append('grant_type', 'client_credentials');
+    params.append('client_id', client_id);
+    params.append('client_secret', client_secret);
+    // Recuperation token permetant de faire des requette pour le user.
+    const rep = await fetch('https://api.intra.42.fr/oauth/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: params.toString()
         });
-    let temp = await rep.json();
-    const { access_token } = temp;
-    const { id } = request.data;
-    const queryParams1 = new URLSearchParams({
-      access_token: access_token,
-      "page[size]": "100",
-      "page[number]": "1",
-    });
-    const queryParams2 = new URLSearchParams({
-      access_token: access_token,
-      "page[size]": "100",
-      "page[number]": "2",
-    });
-    const [dataResponse1, dataResponse2] = await Promise.all([
-      fetch(`https://api.intra.42.fr/v2/users/${id}/locations?${queryParams1.toString()}`),
-      fetch(`https://api.intra.42.fr/v2/users/${id}/locations?${queryParams2.toString()}`)
-    ]);
+        let temp = await rep.json();
+        const { access_token } = temp;
+        const { id } = request.data;
+        const queryParams1 = new URLSearchParams({
+          access_token: access_token,
+          "page[size]": "100",
+          "page[number]": "1",
+        });
+        const queryParams2 = new URLSearchParams({
+          access_token: access_token,
+          "page[size]": "100",
+          "page[number]": "2",
+        });
+        const [dataResponse1, dataResponse2] = await Promise.all([
+          fetch(`https://api.intra.42.fr/v2/users/${id}/locations?${queryParams1.toString()}`),
+          fetch(`https://api.intra.42.fr/v2/users/${id}/locations?${queryParams2.toString()}`)
+        ]);
     const [responseData1, responseData2] = await Promise.all([
       dataResponse1.json(),
       dataResponse2.json()
@@ -289,3 +250,41 @@ exports.getLogtime = onCall(async (request) => {
     throw new functions.https.HttpsError("internal ", "Failed to get user Logtimes ", error);
   }
 });
+
+// exports.getLogtimeV2 = onCall(async (request) => {
+//   try {
+//     const { client_id } = request.data;
+//     const { client_secret } = request.data;
+
+//     const params = new URLSearchParams();
+//     params.append('grant_type', 'client_credentials');
+//     params.append('client_id', client_id);
+//     params.append('client_secret', client_secret);
+
+//         // Recuperation token permetant de faire des requette pour le user.
+//         const rep = await fetch('https://api.intra.42.fr/oauth/token', {
+//           method: 'POST',
+//           headers: {
+//             'Content-Type': 'application/x-www-form-urlencoded',
+//           },
+//           body: params.toString()
+//         });
+
+//         let temp = await rep.json();
+
+//       const { access_token } = temp;
+//       const { login } = request.data;
+
+//     const queryParams1 = new URLSearchParams({
+//       access_token: access_token,
+//     });
+
+//     const dataResponse = await fetch(`https://api.intra.42.fr/v2/users/${login}/locations_stats?${queryParams1.toString()}`);
+
+//     const responseData = await dataResponse.json();
+
+//     return responseData;
+//   } catch (error) {
+//     throw new functions.https.HttpsError("internal ", "Failed to get user LogtimesV2 ", error);
+//   }
+// });
