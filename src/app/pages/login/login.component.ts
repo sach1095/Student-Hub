@@ -14,7 +14,7 @@ export class LoginComponent {
   public showError = false;
   public showSpinner = false;
   public messageError = '';
-  private DEBUGMODE = true;
+  private DEBUGMODE = false;
   constructor(private userService: UserService, private route: ActivatedRoute, private router: Router, private storageService: StorageService) {}
 
   async ngOnInit() {
@@ -29,7 +29,7 @@ export class LoginComponent {
   public async ProcessLogin() {
     if (!this.DEBUGMODE) this.OpenWindowOauth();
     else {
-      let id = '78541';
+      let id = '';
       let user = null;
       user = await this.userService.setUserData(id.toString());
       this.router.navigate(['/home']);
@@ -38,7 +38,7 @@ export class LoginComponent {
 
   private OpenWindowOauth() {
     let redirUriPrefix = encodeURIComponent(`https://student-hub.fr/login`);
-    let codeUriPrefix = encodeURIComponent('u-s4t2ud-45573df269eb8ad26466e16b8f407d8e5dc14447411f6f3307df1ae7faf6b2e9');
+    let codeUriPrefix = encodeURIComponent(environment.CLIENT_ID);
     var url = `https://api.intra.42.fr/oauth/authorize?client_id=${codeUriPrefix}&redirect_uri=${redirUriPrefix}&response_type=code&state=bsfdvjdshfdshfgsdkhgfisudghfiusdvfbuyvhuyfviufbvidusbviidsvb_for_42_student_app`;
     window.location.href = url;
   }
