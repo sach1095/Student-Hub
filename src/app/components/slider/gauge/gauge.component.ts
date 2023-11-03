@@ -29,7 +29,7 @@ export class GaugeComponent implements OnInit {
     if (timeTotals.heuresAFaires == 0) timeTotals.heuresAFaires = DateUtils.getWorkingHoursOfMonthByDates(this.month);
     if (!timeTotals) this.strucGauge.hoursRealized = 0;
     else {
-      this.strucGauge.hoursRealized = DateUtils.convertTimeStringToHours(timeTotals.total);
+      this.strucGauge.hoursRealized = DateUtils.convertTimeStringToHours(timeTotals.total) + timeTotals.heuresDistantiel;
     }
     this.strucGauge.hoursRemaining = timeTotals.heuresAFaires - this.strucGauge.hoursRealized!;
     // if (this.strucGauge.hoursRemaining < 0 || this.strucGauge.hoursRealized > heuresToDo) this.strucGauge.hoursRemaining = heuresToDo;
@@ -56,8 +56,6 @@ export class GaugeComponent implements OnInit {
   }
 
   public setHour(validate: boolean) {
-    let hours;
-
     if (!validate) this.showInputSetHours();
     else {
       let num = parseInt(this.inputHour, 10);

@@ -51,7 +51,7 @@ export class UserService {
     this._userDatas = await this.fetchUser(uid);
     if (this._userDatas) {
       const today = new Date().toLocaleDateString();
-      if (this._userDatas.strucCall.date !== today) {
+      if (this._userDatas.strucCall && this._userDatas.strucCall.date !== today) {
         this._userDatas.strucCall.date = today;
         this._userDatas.strucCall.numberCall = 6;
         this.updateUserByUser(this._userDatas);
@@ -168,6 +168,35 @@ export class UserService {
         console.error('User.service : update : ', error);
       }
       await this.indexedDBService.saveUser(user);
+    }
+  }
+
+  async updateHeuresDistantiel(monthYear: string, dayFormatted: string, timeFormatted: string) {
+    const user = await firstValueFrom(this.getLoggedUser());
+    // Vérifiez si l'entrée pour ce mois existe, sinon, créez-la
+    if (!user?.strucCall.lastSaveTime.timeTotals[monthYear]) {
+      user!.strucCall.lastSaveTime.timeTotals[monthYear] = {
+        details: {},
+        total: '',
+        heuresAFaires: 0,
+        heuresDistantiel: 0,
+      };
+    }
+
+    if (user) {
+      // ici, vous pouvez décider de la logique que vous voulez pour mettre à jour heuresDistantiel.
+      // Cet exemple suppose que vous voulez ajouter le timeFormatted au total existant.
+      const existingHeures = user.strucCall.lastSaveTime.timeTotals[monthYear].heuresDistantiel || 0;
+      const timeParts = timeFormatted.split('h');
+      const newHeures = parseInt(timeParts[0], 10) + parseInt(timeParts[1], 10) / 60; // convertit les heures et les minutes en une valeur décimale d'heures
+      user.strucCall.lastSaveTime.timeTotals[monthYear].heuresDistantiel = existingHeures + newHeures;
+
+      // mettez à jour le total des heures pour ce mois
+      user.strucCall.lastSaveTime.timeTotals[monthYear].details[dayFormatted] = timeFormatted;
+
+      // this.userService.updateTimeTotals;
+      // sauvegardez les modifications apportées à oldTimeTotals où il est stocké
+      // this.setOldTimeTotals(oldTimeTotals);
     }
   }
 

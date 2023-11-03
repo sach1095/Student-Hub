@@ -21,11 +21,14 @@ export class HomeComponent implements OnInit {
   public lastCallTime: any;
   public storedApiCall: any;
   private today = new Date().toLocaleDateString();
+  private tempTimeUpdates: any[] = [];
+  private currentMonthBeingProcessed: string | null = null;
+  public isAlternant = false;
   constructor(private userService: UserService) {}
 
   async ngOnInit() {
     await this.fetchLoggedUser();
-
+    if (this.user?.login === 'sbaranes') this.isAlternant = true;
     this.initialiseStoredApiCall();
     await this.handleGetLogtime();
   }
@@ -43,8 +46,10 @@ export class HomeComponent implements OnInit {
   private async handleGetLogtime(): Promise<void> {
     if (!this.user) return;
 
-    if (this.user.strucCall.numberCall === 6 || this.user.strucCall.date !== this.today) {
-      await this.processGetLogtime();
+    if (!this.user.strucCall) {
+      await this.processGetLogtime(true);
+    } else if (this.user.strucCall.numberCall === 6 || this.user.strucCall.date !== this.today) {
+      await this.processGetLogtime(false);
     } else {
       await this.updateTimeTotalsIfNeeded();
       this.checkIfCurrentMonthExsit();
@@ -67,11 +72,11 @@ export class HomeComponent implements OnInit {
     this.user = await firstValueFrom(this.userService.getLoggedUser());
   }
 
-  public async processGetLogtime() {
+  public async processGetLogtime(firsTime: boolean) {
     const time = new Date().toLocaleTimeString();
 
     this.timeByMonthKeys = [];
-    if (this.storedApiCall && this.storedApiCall.date === this.today && this.storedApiCall.numberCall === 0)
+    if (!firsTime && this.storedApiCall && this.storedApiCall.date === this.today && this.storedApiCall.numberCall === 0)
       this.messageError = 'You have reached the maximum number of calls per day';
     else {
       this.showButtonRefresh = false;
@@ -83,7 +88,6 @@ export class HomeComponent implements OnInit {
         if (this.user!.login !== 'sbaranes' && this.user!.login !== 'agirona' && this.user!.login !== 'dbouron') this.user!.strucCall.numberCall--;
         this.storedApiCall = { date: this.today, numberCall: this.user!.strucCall.numberCall, time: time, lastSaveTime: this.timeTotals, lastSaveMonth: this.timeByMonthKeys };
       } else {
-        this.user!.strucCall.numberCall = 5;
         this.storedApiCall = { date: this.today, numberCall: 5, time: time, lastSaveTime: this.timeTotals, lastSaveMonth: this.timeByMonthKeys };
       }
       this.user!.strucCall = this.storedApiCall;
@@ -100,7 +104,100 @@ export class HomeComponent implements OnInit {
         details: {},
         total: '0h00', // Initialiser à une chaîne vide pour le nouveau mois si 0 connexion
         heuresAFaires: 0, // Initialiser à 0 pour set apres le nombres d'heures a realiser dans le mois
+        heuresDistantiel: 0,
       };
     }
+  }
+
+  onFileSelect(event: Event) {
+    this.showButtonRefresh = false;
+    const target = event.target as HTMLInputElement;
+    const file: File = (target.files as FileList)[0];
+
+    const reader = new FileReader();
+    reader.readAsText(file);
+
+    reader.onload = async () => {
+      const csvData = reader.result as string;
+      await this.extractData(csvData);
+    };
+    setTimeout(() => {
+      this.showButtonRefresh = true;
+    }, 1000);
+  }
+
+  async extractData(csvData: string) {
+    const allTextLines = csvData.split(/\r\n|\n/);
+    for (const line of allTextLines) {
+      // Exemple de ligne: "2023-10-09: ['1:19']"
+      const regex = /(\d{4}-\d{2}-\d{2}): \['(\d{1,2}):(\d{2})'\]/;
+      const match = line.match(regex);
+
+      if (match) {
+        const date = match[1];
+        const hours = match[2];
+        const minutes = match[3];
+
+        const [year, month, day] = date.split('-');
+        const monthYear = `${month}/${year}`;
+        const dayFormatted = `${parseInt(day, 10)}`; // "dd"
+        const timeFormatted = `${parseInt(hours, 10)}h${minutes.padStart(2, '0')}`; // "HHhMM"
+
+        // Vous pouvez maintenant utiliser les valeurs monthYear, dayFormatted, et timeFormatted comme vous le souhaitez
+        this.tempTimeUpdates.push({ monthYear, dayFormatted, timeFormatted });
+      }
+    }
+    await this.processTimeUpdates();
+  }
+
+  // Méthode à l'intérieur de votre service ou composant responsable de la gestion de oldTimeTotals
+  updateHeuresDistantiel(monthYear: string, dayFormatted: string, timeFormatted: string) {
+    if (this.currentMonthBeingProcessed !== monthYear) {
+      this.currentMonthBeingProcessed = monthYear;
+
+      if (!this.timeTotals[monthYear]) {
+        this.timeTotals[monthYear] = {
+          details: {},
+          total: '',
+          heuresAFaires: 0,
+          heuresDistantiel: 0, // réinitialisé à 0 pour un nouveau mois
+        };
+      } else {
+        // Si l'entrée pour le mois existe déjà, réinitialisez juste heuresDistantiel
+        this.timeTotals[monthYear].heuresDistantiel = 0;
+      }
+    }
+
+    // ici, vous pouvez décider de la logique que vous voulez pour mettre à jour heuresDistantiel.
+    // Cet exemple suppose que vous voulez ajouter le timeFormatted au total existant.
+    const existingHeures = this.timeTotals[monthYear].heuresDistantiel || 0;
+    const timeParts = timeFormatted.split('h');
+    const newHeures = parseInt(timeParts[0], 10) + parseInt(timeParts[1], 10) / 60; // convertit les heures et les minutes en une valeur décimale d'heures
+    this.timeTotals[monthYear].heuresDistantiel = existingHeures + newHeures;
+
+    // mettez à jour le total des heures pour ce mois
+    this.timeTotals[monthYear].details[dayFormatted] = timeFormatted;
+  }
+
+  async processTimeUpdates() {
+    for (const update of this.tempTimeUpdates) {
+      this.updateHeuresDistantiel(update.monthYear, update.dayFormatted, update.timeFormatted);
+    }
+
+    // Après avoir traité toutes les mises à jour, mettez à jour l'utilisateur
+    this.user!.strucCall.lastSaveTime = this.timeTotals;
+    this.timeByMonthKeys = [];
+    this.timeByMonthKeys = this.MyObject.keys(this.timeTotals);
+    this.timeByMonthKeys = DateUtils.formatTimeByMonthKeys(this.timeByMonthKeys);
+    this.storedApiCall = {
+      date: this.today,
+      numberCall: this.user!.strucCall.numberCall,
+      time: this.user!.strucCall.time,
+      lastSaveTime: this.timeTotals,
+      lastSaveMonth: this.timeByMonthKeys,
+    };
+    this.user!.strucCall = this.storedApiCall;
+    await this.userService.updateUser();
+    this.tempTimeUpdates = [];
   }
 }
