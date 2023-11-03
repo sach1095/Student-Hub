@@ -23,12 +23,12 @@ export class HomeComponent implements OnInit {
   private today = new Date().toLocaleDateString();
   private tempTimeUpdates: any[] = [];
   private currentMonthBeingProcessed: string | null = null;
-  isAlternant = false;
+  public isAlternant = false;
   constructor(private userService: UserService) {}
 
   async ngOnInit() {
     await this.fetchLoggedUser();
-
+    if (this.user?.login === 'sbaranes') this.isAlternant = true;
     this.initialiseStoredApiCall();
     await this.handleGetLogtime();
   }
@@ -46,8 +46,10 @@ export class HomeComponent implements OnInit {
   private async handleGetLogtime(): Promise<void> {
     if (!this.user) return;
 
-    if (this.user.strucCall.numberCall === 6 || this.user.strucCall.date !== this.today) {
-      await this.processGetLogtime();
+    if (!this.user.strucCall) {
+      await this.processGetLogtime(true);
+    } else if (this.user.strucCall.numberCall === 6 || this.user.strucCall.date !== this.today) {
+      await this.processGetLogtime(false);
     } else {
       await this.updateTimeTotalsIfNeeded();
       this.checkIfCurrentMonthExsit();
@@ -70,18 +72,11 @@ export class HomeComponent implements OnInit {
     this.user = await firstValueFrom(this.userService.getLoggedUser());
   }
 
-  public async test() {
-    var test;
-    test = await LogtimeUtils.getLogtime(this.user!.login, this.timeTotals || {});
-    console.log('test final');
-    console.log(test);
-  }
-
-  public async processGetLogtime() {
+  public async processGetLogtime(firsTime: boolean) {
     const time = new Date().toLocaleTimeString();
 
     this.timeByMonthKeys = [];
-    if (this.storedApiCall && this.storedApiCall.date === this.today && this.storedApiCall.numberCall === 0)
+    if (!firsTime && this.storedApiCall && this.storedApiCall.date === this.today && this.storedApiCall.numberCall === 0)
       this.messageError = 'You have reached the maximum number of calls per day';
     else {
       this.showButtonRefresh = false;
@@ -93,7 +88,6 @@ export class HomeComponent implements OnInit {
         if (this.user!.login !== 'sbaranes' && this.user!.login !== 'agirona' && this.user!.login !== 'dbouron') this.user!.strucCall.numberCall--;
         this.storedApiCall = { date: this.today, numberCall: this.user!.strucCall.numberCall, time: time, lastSaveTime: this.timeTotals, lastSaveMonth: this.timeByMonthKeys };
       } else {
-        this.user!.strucCall.numberCall = 5;
         this.storedApiCall = { date: this.today, numberCall: 5, time: time, lastSaveTime: this.timeTotals, lastSaveMonth: this.timeByMonthKeys };
       }
       this.user!.strucCall = this.storedApiCall;

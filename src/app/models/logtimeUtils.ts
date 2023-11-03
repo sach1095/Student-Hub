@@ -23,9 +23,6 @@ export class LogtimeUtils {
 
     let userlogtime: any;
 
-    // await getLogtimeV2({ login: login, client_id: environment.CLIENT_ID, client_secret: environment.CLIENT_SECRET }).then(async (rep: any) => {
-    //   userlogtime = rep.data;
-    // });
     await getLogtimeV1({ id: login, client_id: environment.CLIENT_ID, client_secret: environment.CLIENT_SECRET }).then(async (rep: any) => {
       userlogtime = rep.data;
       if (!rep.data[0].end_at) {
@@ -34,7 +31,7 @@ export class LogtimeUtils {
         userlogtime[0].end_at = date_now;
       }
     });
-    console.log('object return = ', userlogtime); // FOR DEBUG
+    // console.log('object return = ', userlogtime); // FOR DEBUG
 
     return userlogtime;
   }
@@ -42,8 +39,10 @@ export class LogtimeUtils {
   static async calculateTimeConnected(response: any, oldTimeTotals: any) {
     let newTimeTotals: any = {};
 
+    // Supprimez les sessions qui se chevauchent avant de commencer le traitement.
+    const nonOverlappingSessions = this.removeOverlappingSessions(response);
     // Traitement des données de l'API pour obtenir les durées par jour
-    response.forEach((item: any) => {
+    nonOverlappingSessions.forEach((item: any) => {
       const sessions = this.splitSessions(item);
       sessions.forEach((session) => {
         // votre code existant pour traiter chaque session
@@ -189,5 +188,30 @@ export class LogtimeUtils {
     }
 
     return sessions;
+  }
+
+  static removeOverlappingSessions(response: any) {
+    // Triez les sessions par heure de début.
+    const sortedSessions = response.sort((a: any, b: any) => a.begin_at.localeCompare(b.begin_at));
+
+    const filtered = sortedSessions.reduce((acc: any[], currentSession: { begin_at: number; end_at: number }, currentIndex: any, array: any) => {
+      // S'il n'y a pas de session précédente ou que la session actuelle ne chevauche pas la précédente, l'ajouter telle quelle.
+      if (acc.length === 0 || currentSession.begin_at >= acc[acc.length - 1].end_at) {
+        acc.push(currentSession);
+      } else {
+        // S'il y a chevauchement, ajustez la fin de la session précédente pour qu'elle ne chevauche pas la session actuelle.
+        const lastSession = acc[acc.length - 1];
+        if (lastSession.end_at > currentSession.begin_at) {
+          lastSession.end_at = currentSession.begin_at; // Ajustez la fin de la dernière session au début de la session actuelle pour éliminer le chevauchement.
+        }
+        // Si la session actuelle se termine après la dernière session, l'ajouter à la liste également.
+        if (currentSession.end_at > lastSession.end_at) {
+          acc.push(currentSession);
+        }
+      }
+      return acc;
+    }, []);
+
+    return filtered;
   }
 }

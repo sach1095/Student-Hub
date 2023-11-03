@@ -51,7 +51,7 @@ export class UserService {
     this._userDatas = await this.fetchUser(uid);
     if (this._userDatas) {
       const today = new Date().toLocaleDateString();
-      if (this._userDatas.strucCall.date !== today) {
+      if (this._userDatas.strucCall && this._userDatas.strucCall.date !== today) {
         this._userDatas.strucCall.date = today;
         this._userDatas.strucCall.numberCall = 6;
         this.updateUserByUser(this._userDatas);

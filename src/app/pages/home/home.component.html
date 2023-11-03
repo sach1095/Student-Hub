@@ -2,8 +2,7 @@
     <h1>Hello {{ user?.name }} !</h1>
     <div *ngIf="showButtonRefresh">
         <span>
-            <button mat-fab extended color="primary" (click)="processGetLogtime()">Refresh Logtime</button>
-            <button mat-fab extended color="primary" (click)="test()">test</button>
+            <button mat-fab extended color="primary" (click)="processGetLogtime(false)">Refresh Logtime</button>
             <input type="file" (change)="onFileSelect($event)" id="file" style="display: none" />
             <button mat-fab extended *ngIf="isAlternant" color="primary" id="btnFile">
                 <label for="file" mat-raised-button color="primary">Importer Logtime Distanciel</label>
