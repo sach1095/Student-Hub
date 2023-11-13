@@ -25,7 +25,7 @@ export class UserService {
     this._isSomethingChanged.next(value);
   }
 
-  constructor(private readonly firestore: Firestore, private indexedDBService: IndexedDBService, private storageService: StorageService, private router: Router) {}
+  constructor(private readonly firestore: Firestore, private indexedDBService: IndexedDBService, private router: Router) {}
 
   // ================= Handling logged in user ================= \\
   public async initUserDatas() {
@@ -149,6 +149,7 @@ export class UserService {
         console.error('User.service : update : ', error);
       }
       await this.indexedDBService.saveUser(user);
+      this.isSomethingChanged = false;
     }
   }
 
@@ -177,8 +178,6 @@ export class UserService {
     }
 
     if (user) {
-      // ici, vous pouvez décider de la logique que vous voulez pour mettre à jour heuresDistantiel.
-      // Cet exemple suppose que vous voulez ajouter le timeFormatted au total existant.
       const existingHeures = user.strucCall.lastSaveTime.timeTotals[monthYear].heuresDistantiel || 0;
       const timeParts = timeFormatted.split('h');
       const newHeures = parseInt(timeParts[0], 10) + parseInt(timeParts[1], 10) / 60; // convertit les heures et les minutes en une valeur décimale d'heures
@@ -187,7 +186,6 @@ export class UserService {
       // mettez à jour le total des heures pour ce mois
       user.strucCall.lastSaveTime.timeTotals[monthYear].details[dayFormatted] = timeFormatted;
 
-      // this.userService.updateTimeTotals;
       // sauvegardez les modifications apportées à oldTimeTotals où il est stocké
       // this.setOldTimeTotals(oldTimeTotals);
     }

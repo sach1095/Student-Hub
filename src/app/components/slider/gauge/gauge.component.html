@@ -6,7 +6,7 @@
     <p>{{ showHoursRealized }} heures réalisées</p>
     <div *ngIf="!inputHourStatus">
         <span id="edit-line">
-            <p *ngIf="!hoursRealized">{{ showHoursRemaining }} heures restantes</p>
+            <p *ngIf="!hoursRealized">{{ showHoursRemaining }} heures restantes sur {{ timeTotals.heuresAFaires }}</p>
             <p *ngIf="hoursRealized">Total d'heures atteint</p>
             <mat-icon (click)="showInputSetHours()">edit</mat-icon>
         </span>

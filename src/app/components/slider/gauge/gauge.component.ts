@@ -32,7 +32,6 @@ export class GaugeComponent implements OnInit {
       this.strucGauge.hoursRealized = DateUtils.convertTimeStringToHours(timeTotals.total) + timeTotals.heuresDistantiel;
     }
     this.strucGauge.hoursRemaining = timeTotals.heuresAFaires - this.strucGauge.hoursRealized!;
-    // if (this.strucGauge.hoursRemaining < 0 || this.strucGauge.hoursRealized > heuresToDo) this.strucGauge.hoursRemaining = heuresToDo;
 
     // Formatter les valeurs des heures réalisées et restantes au format H:mm
     this.showHoursRealized = this.formatHours(this.strucGauge.hoursRealized);
