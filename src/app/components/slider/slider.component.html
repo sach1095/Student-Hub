@@ -2,8 +2,10 @@
     <div class="keen-slider__slide" *ngFor="let gaugeData of gaugeDataArray">
         <div class="keen-slider__slide-div">
             <p>{{ getMonthNameFromDate(gaugeData.month) }}</p>
-            <app-gauge [timeTotals]="gaugeData.timeTotal" [month]="gaugeData.month"> </app-gauge>
+            <app-gauge *ngIf="!ShowCalendar" [timeTotals]="gaugeData.timeTotal" [month]="gaugeData.month"> </app-gauge>
+            <app-calendar *ngIf="ShowCalendar" [timeTotals]="gaugeData.timeTotal" [month]="gaugeData.month"></app-calendar>
         </div>
+        <!-- <button mat-fab extended color="primary" (click)="swap()" style="font-size: 19px">Details</button> -->
     </div>
     <svg [ngClass]="'arrow arrow--left ' + (currentSlide === 0 ? 'arrow--disabled' : '')" (click)="slider!.prev()" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z" />

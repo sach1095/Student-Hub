@@ -29,6 +29,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CustomTooltipComponent } from './pages/matrice/custom-tooltip/custom-tooltip.component';
 import { registerLocaleData } from '@angular/common';
 import * as fr from '@angular/common/locales/fr';
+import { CalendarComponent } from './components/slider/calendar/calendar.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import * as fr from '@angular/common/locales/fr';
     ZoneComponent,
     ParamMapComponent,
     CustomTooltipComponent,
+    CalendarComponent,
   ],
   imports: [
     BrowserModule,

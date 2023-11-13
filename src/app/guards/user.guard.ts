@@ -17,9 +17,13 @@ export class UserGuard implements CanActivate {
   }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean | UrlTree> {
+    const isInitCompleted = await firstValueFrom(this.userService.initCompleted$);
+    if (!isInitCompleted) {
+      return this.router.createUrlTree(['/login']);
+    }
+
     await this.fetchLoggedUser();
     const isLoggedIn = this.user ? true : false;
-    if (!isLoggedIn) this.router.navigate(['/login']);
-    return true;
+    return isLoggedIn || this.router.createUrlTree(['/login']);
   }
 }
