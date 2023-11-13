@@ -6,6 +6,7 @@ import { BehaviorSubject, firstValueFrom, Observable, ReplaySubject } from 'rxjs
 import { ParamMapInterface, StrucCall, User } from 'src/app/models/users';
 import { StorageService } from './storage.service';
 import { IndexedDBService } from './indexed-db.service';
+import { Location } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
@@ -21,11 +22,17 @@ export class UserService {
     return this._isSomethingChanged.asObservable();
   }
 
+  private _initCompleted = new ReplaySubject<boolean>(1);
+
+  get initCompleted$(): Observable<boolean> {
+    return this._initCompleted.asObservable();
+  }
+
   set isSomethingChanged(value: boolean) {
     this._isSomethingChanged.next(value);
   }
 
-  constructor(private readonly firestore: Firestore, private indexedDBService: IndexedDBService, private router: Router) {}
+  constructor(private readonly firestore: Firestore, private indexedDBService: IndexedDBService, private router: Router, private location: Location) {}
 
   // ================= Handling logged in user ================= \\
   public async initUserDatas() {
@@ -35,7 +42,9 @@ export class UserService {
       this._userDatas = new User(dbUser.id, dbUser.name, dbUser.login, dbUser.type, dbUser.urlImg, dbUser.wallet, dbUser.campus, dbUser.year, dbUser.strucCall, dbUser.paramMap);
       this._loggedUser.next(this._userDatas);
       this.setUserData(this._userDatas.id);
+      this._initCompleted.next(true);
     } else {
+      this._initCompleted.next(false);
       this.router.navigate(['/login']);
     }
   }
