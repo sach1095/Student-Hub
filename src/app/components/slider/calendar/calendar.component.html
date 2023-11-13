@@ -3,10 +3,8 @@
         <div class="weekday" *ngFor="let day of weekDays">{{ day }}</div>
     </div>
     <div class="week" *ngFor="let week of weeks">
-        <div class="day" *ngFor="let day of week" [title]="day ? getHoursForDay(day) : ''">
+        <div class="day" *ngFor="let day of week" [title]="day ? getHoursForDay(day) : ''" [ngClass]="{ 'has-hours': getHoursForDay(day!) !== '0H00' }">
             {{ day || "" }}
         </div>
     </div>
 </div>
-<!-- <text x="486" y="20" fill="#999" width="126" height="126" font-family="sans-serif" font-size="10">Oct (30h36)</text>
-<g data-toggle="tooltip" data-original-title="0h00 (8h33)" data-iidate="2023-10-01" data-nolog=""><rect x="450" y="40" width="18" height="18" stroke="#fff" stroke-width="2" fill="#fafafa"></rect><text x="454.5" y="51" fill="#ccc" width="18" height="18" font-family="sans-serif" font-size="9">1</text></g> -->

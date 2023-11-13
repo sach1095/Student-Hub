@@ -5,7 +5,6 @@
             <app-gauge *ngIf="!ShowCalendar" [timeTotals]="gaugeData.timeTotal" [month]="gaugeData.month"> </app-gauge>
             <app-calendar *ngIf="ShowCalendar" [timeTotals]="gaugeData.timeTotal" [month]="gaugeData.month"></app-calendar>
         </div>
-        <!-- <button mat-fab extended color="primary" (click)="swap()" style="font-size: 19px">Details</button> -->
     </div>
     <svg [ngClass]="'arrow arrow--left ' + (currentSlide === 0 ? 'arrow--disabled' : '')" (click)="slider!.prev()" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z" />
@@ -20,7 +19,10 @@
         <path d="M5 3l3.057-3 11.943 12-11.943 12-3.057-3 9-9z" />
     </svg>
 </div>
-<button *ngIf="showButtonSave" mat-fab extended color="primary" (click)="processSave()" style="font-size: 19px">Save</button>
+<div class="slider-div-button">
+    <button class="slider-div__button" mat-fab extended color="primary" (click)="swap()">Details</button>
+    <button class="slider-div__button" *ngIf="showButtonSave" mat-fab extended color="primary" (click)="processSave()" style="margin-left: 10px">Save</button>
+</div>
 <div class="dots">
     <button class="dot-button" (click)="slider!.moveToIdx(i)" *ngFor="let slide of dotHelper; let i = index" [class]="'dot ' + (i === currentSlide ? 'active' : '')"></button>
 </div>
