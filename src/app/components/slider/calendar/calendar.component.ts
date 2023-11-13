@@ -11,28 +11,29 @@ export class CalendarComponent implements OnChanges {
   weekDays = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
   weeks: Array<Array<number | null>> = [];
   hoveredDayHours: string | null = null;
+  hoursForDays: { [key: number]: string } = {};
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['month']) {
       this.generateCalendar();
     }
-    console.log('this.timeTotals');
-    console.log(this.timeTotals);
   }
 
   generateCalendar(): void {
     this.weeks = [];
+    this.hoursForDays = {};
     const [month, year] = this.month.split('/').map(Number);
     const firstDayOfMonth = new Date(year, month - 1, 1);
     const daysInMonth = new Date(year, month, 0).getDate();
 
     let dayOfWeek = firstDayOfMonth.getDay();
-    dayOfWeek = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Adjust so Monday is 0, Sunday is 6
+    dayOfWeek = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
 
-    let week: Array<number | null> = Array(dayOfWeek).fill(null); // Start with empty days, explicit type declaration
+    let week: Array<number | null> = Array(dayOfWeek).fill(null);
 
     for (let day = 1; day <= daysInMonth; day++) {
       week.push(day);
+      this.hoursForDays[day] = this.getHoursForDay(day);
       if (week.length === 7 || day === daysInMonth) {
         while (week.length < 7) {
           week.push(null);
@@ -44,11 +45,16 @@ export class CalendarComponent implements OnChanges {
   }
 
   getHoursForDay(day: number): string {
+    if (!day) return '0H00';
     const yearMonth = this.month;
-    // console.log("DEbug")
-    if (day && this.timeTotals[yearMonth] && this.timeTotals[yearMonth].details[day]) {
-      return `${this.timeTotals[yearMonth].details[day]}`;
+    const dayStr = day.toString();
+
+    if (this.timeTotals) {
+      if (day && this.timeTotals.details && this.timeTotals.details[dayStr]) {
+        return this.timeTotals.details[dayStr];
+      }
     }
+
     return '0H00';
   }
 }
