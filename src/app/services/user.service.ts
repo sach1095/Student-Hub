@@ -13,7 +13,6 @@ import { IndexedDBService } from './indexed-db.service';
 export class UserService {
   private usersCollection = collection(this.firestore, 'users');
   private _loggedUser = new BehaviorSubject<User | null>(null);
-  private _isInitCompleted = new ReplaySubject<boolean>(1);
   private _userDatas: User | null = null;
 
   private _isSomethingChanged = new BehaviorSubject<boolean>(false);
@@ -36,15 +35,9 @@ export class UserService {
       this._userDatas = new User(dbUser.id, dbUser.name, dbUser.login, dbUser.type, dbUser.urlImg, dbUser.wallet, dbUser.campus, dbUser.year, dbUser.strucCall, dbUser.paramMap);
       this._loggedUser.next(this._userDatas);
       this.setUserData(this._userDatas.id);
-      this._isInitCompleted.next(true);
     } else {
-      this._isInitCompleted.next(false);
       this.router.navigate(['/login']);
     }
-  }
-
-  get isInitCompleted$(): Observable<boolean> {
-    return this._isInitCompleted.asObservable();
   }
 
   public async setUserData(uid: string): Promise<User | null> {
@@ -104,10 +97,10 @@ export class UserService {
     return this._loggedUser.asObservable();
   }
 
-  public resetUser() {
+  public async resetUser() {
     this._userDatas = null;
     this._loggedUser.next(null);
-    this.indexedDBService.clearDatabase();
+    await this.indexedDBService.clearDatabase();
   }
 
   // ================= Handling application users ================= \\

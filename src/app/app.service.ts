@@ -9,11 +9,11 @@ import { IndexedDBService } from './services/indexed-db.service';
 export class AppService {
   constructor(private router: Router, private userService: UserService, private indexedDBService: IndexedDBService) {}
 
-  public logOut() {
-    this.userService.resetUser();
+  public async logOut() {
+    await this.userService.resetUser();
     localStorage.removeItem('usersIndex');
     localStorage.removeItem('usersIndex');
-    this.router.navigate(['/login']);
     this.indexedDBService.closeDatabase();
+    this.router.navigate(['/login']);
   }
 }

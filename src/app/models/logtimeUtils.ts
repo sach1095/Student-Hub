@@ -13,8 +13,7 @@ export class LogtimeUtils {
   static async getLogtime(login: string, oldTimeTotals: any) {
     let response = await LogtimeUtils.fetchLogtime(login);
 
-    let test = await this.calculateTimeConnected(response, oldTimeTotals);
-    return test;
+    return await this.calculateTimeConnected(response, oldTimeTotals);
   }
 
   static async fetchLogtime(login: string): Promise<any> {
@@ -26,9 +25,9 @@ export class LogtimeUtils {
     await getLogtimeV1({ id: login, client_id: environment.CLIENT_ID, client_secret: environment.CLIENT_SECRET }).then(async (rep: any) => {
       userlogtime = rep.data;
       if (!rep.data[0].end_at) {
-        let date_now = '';
-        date_now = format(new Date(), 'yyyy-MM-dd').toString() + 'T' + format(new Date(), 'HH:mm:ss').toString() + '.000Z';
-        userlogtime[0].end_at = date_now;
+        const now = new Date().toISOString();
+
+        userlogtime[0].end_at = now;
       }
     });
     // console.log('object return = ', userlogtime); // FOR DEBUG

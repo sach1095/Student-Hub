@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { getFunctions, provideFunctions } from '@angular/fire/functions';
@@ -27,6 +27,8 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { ParamMapComponent } from './pages/matrice/param-map/param-map.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CustomTooltipComponent } from './pages/matrice/custom-tooltip/custom-tooltip.component';
+import { registerLocaleData } from '@angular/common';
+import * as fr from '@angular/common/locales/fr';
 
 @NgModule({
   declarations: [
@@ -58,7 +60,16 @@ import { CustomTooltipComponent } from './pages/matrice/custom-tooltip/custom-to
     MatGridListModule,
     ReactiveFormsModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: LOCALE_ID,
+      useValue: 'fr-FR',
+    },
+  ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+  constructor() {
+    registerLocaleData(fr.default);
+  }
+}

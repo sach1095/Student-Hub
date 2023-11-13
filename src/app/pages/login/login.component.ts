@@ -58,14 +58,12 @@ export class LoginComponent {
           this.router.navigate(['/home']);
         } else throw new Error('user return from api is null or empty');
       });
-      this.router.navigate(['/home']);
     } catch (error) {
       console.log('Error fetch data user from api.intra.42.fr :', error);
       this.messageError = 'Error fetch data user from api.intra.42.fr';
       this.showError = true;
       this.showSpinner = false;
     }
-    this.router.navigate(['/home']);
   }
 
   private async proccessLoginUser(userData: any) {

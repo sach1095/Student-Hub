@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { User } from '../models/users';
 import { openDB, IDBPDatabase } from 'idb';
-import { UserMatrice } from '../models/matrice';
 
 @Injectable({
   providedIn: 'root',

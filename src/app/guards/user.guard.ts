@@ -17,12 +17,6 @@ export class UserGuard implements CanActivate {
   }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean | UrlTree> {
-    const isInitCompleted = await firstValueFrom(this.userService.isInitCompleted$);
-    if (!isInitCompleted) {
-      // Vous pourriez vouloir rediriger vers une page de chargement ou maintenir l'utilisateur sur la même page jusqu'à ce que l'initialisation soit terminée
-      return false;
-    }
-
     await this.fetchLoggedUser();
     const isLoggedIn = this.user ? true : false;
     if (!isLoggedIn) this.router.navigate(['/login']);
