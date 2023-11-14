@@ -68,20 +68,47 @@ export class CalendarComponent implements OnChanges {
   }
 
   getBackgroundColor(hours: string): string {
-    if (hours === '0H00') {
-      return `rgba(92, 38, 109, 0)`;
-    }
+    if (hours === '0H00' || hours === 'Pres : 0H00 | Dis: 0H00') return `rgba(92, 38, 109, 0)`;
 
     const parsedHours: string[] = hours.split('h');
-    const nbHours: number = +parsedHours[0];
+    let nbHours: number = +parsedHours[0];
     const maxHours: number = 24;
     const minLightness = 20;
     const maxLightness = 80;
 
     // Calcul de la luminosité en fonction du nombre d'heures
-    let lightness = ((nbHours / maxHours) * (maxLightness - minLightness)) + minLightness;
+    let lightness;
+    if (!this.isAlternant) lightness = (nbHours / maxHours) * (maxLightness - minLightness) + minLightness;
+    else {
+      const { presentiel, distantiel } = this.extractHours(hours);
+      nbHours = presentiel + distantiel;
+      lightness = (nbHours / maxHours) * (maxLightness - minLightness) + minLightness;
+    }
+
     lightness = Math.max(minLightness, Math.min(lightness, maxLightness));
 
     return `hsl(276, 48%, ${lightness}%)`;
+  }
+
+  extractHours(input: string): { presentiel: number; distantiel: number } {
+    const parts = input.split('|');
+    if (parts.length === 2) {
+      const presentielPart = parts[0].replace('Pres : ', '').split('h')[0];
+      const distantielPart = parts[1].replace(' Dis: ', '').split('h')[0];
+
+      const presentielHours = parseInt(presentielPart, 10);
+      const distantielHours = parseInt(distantielPart, 10);
+
+      return {
+        presentiel: isNaN(presentielHours) ? 0 : presentielHours,
+        distantiel: isNaN(distantielHours) ? 0 : distantielHours,
+      };
+    } else {
+      // Retourne 0 si le format est incorrect
+      return {
+        presentiel: 0,
+        distantiel: 0,
+      };
+    }
   }
 }
