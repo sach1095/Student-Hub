@@ -17,6 +17,7 @@ interface GaugeData {
 export class SliderComponent implements OnChanges {
   @Input() timeByMonthKeys!: string[];
   @Input() timeTotals: any;
+  @Input() isAlternant!: boolean;
   indexes: number[] = [];
   public gaugeDataArray: GaugeData[] = [];
   @ViewChild('sliderRef')

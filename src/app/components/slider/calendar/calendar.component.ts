@@ -8,6 +8,7 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 export class CalendarComponent implements OnChanges {
   @Input() public timeTotals: any;
   @Input() public month: string = '';
+  @Input() public isAlternant!: boolean;
   weekDays = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
   weeks: Array<Array<number | null>> = [];
   hoveredDayHours: string | null = null;
@@ -45,16 +46,24 @@ export class CalendarComponent implements OnChanges {
   }
 
   getHoursForDay(day: number): string {
-    if (!day) return '0H00';
-    const yearMonth = this.month;
+    if (!day && !this.isAlternant) return '0H00';
+    else if (!day) return 'Pres : 0H00 | Dis: 0H00';
     const dayStr = day.toString();
+    let resultDetails = '0H00';
+    let resultDetailsDistentielle = '0H00';
 
     if (this.timeTotals) {
       if (day && this.timeTotals.details && this.timeTotals.details[dayStr]) {
-        return this.timeTotals.details[dayStr];
+        resultDetails = this.timeTotals.details[dayStr];
+      }
+      if (day && this.isAlternant && this.timeTotals.detailsDistentielle && this.timeTotals.detailsDistentielle[dayStr]) {
+        resultDetailsDistentielle = this.timeTotals.detailsDistentielle[dayStr];
       }
     }
 
-    return '0H00';
+    if (this.isAlternant) {
+      return 'Pres : ' + resultDetails + ' | Dis: ' + resultDetailsDistentielle;
+    }
+    return resultDetails;
   }
 }
