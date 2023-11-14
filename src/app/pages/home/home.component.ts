@@ -4,6 +4,10 @@ import { firstValueFrom } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
 import { LogtimeUtils } from 'src/app/models/logtimeUtils';
 import { DateUtils } from 'src/app/models/dateUtils';
+import { formatDate } from '@angular/common';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import * as moment from 'moment';
+import * as ExcelJS from 'exceljs';
 
 @Component({
   selector: 'app-home',
@@ -14,6 +18,7 @@ export class HomeComponent implements OnInit {
   public user?: User | null;
   public messageError: string = '';
   public showButtonRefresh = false;
+  public showDatePicker = false;
   public timeTotals: any;
   public timeByMonthKeys: string[] = [];
   public MyObject = Object;
@@ -24,7 +29,13 @@ export class HomeComponent implements OnInit {
   private tempTimeUpdates: any[] = [];
   private currentMonthBeingProcessed: string | null = null;
   public isAlternant = false;
-  constructor(private userService: UserService) {}
+
+  public dateRange = this.formBuilder.group({
+    start: [new FormControl<Date | null>(null), [Validators.required]],
+    end: [new FormControl<Date | null>(null), [Validators.required]],
+  });
+
+  constructor(private userService: UserService, private readonly formBuilder: FormBuilder) {}
 
   async ngOnInit() {
     await this.fetchLoggedUser();
@@ -172,15 +183,11 @@ export class HomeComponent implements OnInit {
       }
     }
 
-    // ici, vous pouvez décider de la logique que vous voulez pour mettre à jour heuresDistantiel.
-    // Cet exemple suppose que vous voulez ajouter le timeFormatted au total existant.
     const existingHeures = this.timeTotals[monthYear].heuresDistantiel || 0;
     const timeParts = timeFormatted.split('h');
     const newHeures = parseInt(timeParts[0], 10) + parseInt(timeParts[1], 10) / 60; // convertit les heures et les minutes en une valeur décimale d'heures
     this.timeTotals[monthYear].heuresDistantiel = existingHeures + newHeures;
 
-    // mettez à jour le total des heures pour ce mois
-    // this.timeTotals[monthYear].details[dayFormatted] = timeFormatted;
     this.timeTotals[monthYear].detailsDistentielle[dayFormatted] = timeFormatted;
   }
 
@@ -207,5 +214,88 @@ export class HomeComponent implements OnInit {
     this.user!.strucCall = this.storedApiCall;
     await this.userService.updateUser();
     this.tempTimeUpdates = [];
+  }
+
+  public showDateButton(state: boolean) {
+    this.showDatePicker = state;
+    if (state === false) {
+      this.dateRange = this.formBuilder.group({
+        start: [new FormControl<Date | null>(null), [Validators.required]],
+        end: [new FormControl<Date | null>(null), [Validators.required]],
+      });
+    }
+  }
+
+  public processExportLogtime(): void {
+    const startDate: Date | null | undefined = this.dateRange.get('start')?.value;
+    const endDate: Date | null | undefined = this.dateRange.get('end')?.value;
+    if (startDate && endDate) this.exportLogtime(startDate, endDate, this.timeTotals);
+  }
+
+  private async exportLogtime(startDate: Date, endDate: Date, logtimeData: any) {
+    const dates = this.getDatesBetween(startDate, endDate);
+    const fileName = `testCSVlogtime-${formatDate(startDate, 'dd-MM-yyyy', 'en-US')}-to-${formatDate(endDate, 'dd-MM-yyyy', 'en-US')}`;
+    await this.generateCSVFile(dates, logtimeData, fileName);
+    this.showDatePicker = false;
+  }
+
+  private getDatesBetween(startDate: Date, endDate: Date): Date[] {
+    let dates = [];
+    let currentDate = startDate;
+
+    while (currentDate <= endDate) {
+      dates.push(new Date(currentDate));
+      currentDate = moment(currentDate).add(1, 'days').toDate();
+    }
+
+    return dates;
+  }
+
+  public async generateCSVFile(dates: Date[], logtimeData: any, fileName: string) {
+    // Créez un nouveau classeur Excel
+    const workbook = new ExcelJS.Workbook();
+
+    // Ajoutez une feuille de calcul au classeur
+    const worksheet = workbook.addWorksheet('Logtime');
+
+    let headers = [];
+    // En-têtes des colonnes
+    if (!this.isAlternant) headers = ['Date', 'Logtime'];
+    else headers = ['Date', 'Logtime présentiel ', 'Logtime distanciel'];
+
+    worksheet.addRow(headers);
+
+    dates.forEach((date) => {
+      let detailsDistentielle;
+      const yearMonth = formatDate(date, 'MM/yyyy', 'en-US');
+      const day = formatDate(date, 'd', 'en-US');
+      const logtime = logtimeData[yearMonth] && logtimeData[yearMonth].details[day] ? logtimeData[yearMonth].details[day] : '';
+      if (this.isAlternant)
+        detailsDistentielle =
+          logtimeData[yearMonth] && logtimeData[yearMonth].detailsDistentielle && logtimeData[yearMonth].detailsDistentielle[day] ? logtimeData[yearMonth].details[day] : '';
+      const formattedDate = formatDate(date, 'yyyy-MM-dd', 'en-US');
+
+      let rowData;
+      if (!this.isAlternant) rowData = [formattedDate, logtime];
+      else rowData = [formattedDate, logtime, detailsDistentielle];
+      worksheet.addRow(rowData);
+    });
+
+    // Générez le fichier Excel en mémoire
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    // Créez un objet Blob à partir du buffer Excel
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+    // Créez l'URL de téléchargement à partir du Blob
+    const url = URL.createObjectURL(blob);
+
+    // Créez le lien de téléchargement
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+
+    link.click();
+    URL.revokeObjectURL(url);
   }
 }

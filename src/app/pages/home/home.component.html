@@ -2,11 +2,29 @@
     <h1>Hello {{ user?.name }} !</h1>
     <div *ngIf="showButtonRefresh">
         <span>
-            <button mat-fab extended color="primary" (click)="processGetLogtime(false)">Refresh Logtime</button>
+            <button class="Stud-button" mat-fab extended color="primary" (click)="processGetLogtime(false)">Refresh Logtime</button>
+            <button class="Stud-button button-margin" *ngIf="!showDatePicker" mat-fab extended color="primary" (click)="showDateButton(true)">Export Logtime</button>
             <input type="file" (change)="onFileSelect($event)" id="file" style="display: none" />
-            <button mat-fab extended *ngIf="isAlternant" color="primary" id="btnFile">
+            <button class="Stud-button button-margin" mat-fab extended *ngIf="isAlternant" color="primary">
                 <label for="file" mat-raised-button color="primary">Importer Logtime Distanciel</label>
             </button>
+            <div class="date-range-picker">
+                <div *ngIf="showDatePicker" class="date-picker">
+                    <mat-form-field>
+                        <mat-label>Enter a date range</mat-label>
+                        <mat-date-range-input [formGroup]="dateRange" [rangePicker]="picker">
+                            <input matStartDate formControlName="start" placeholder="Start date" />
+                            <input matEndDate formControlName="end" placeholder="End date" />
+                        </mat-date-range-input>
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-date-range-picker #picker></mat-date-range-picker>
+                    </mat-form-field>
+                </div>
+                <button class="Stud-button" *ngIf="showDatePicker" mat-fab extended color="primary" (click)="showDateButton(false)">Cancel</button>
+                <button class="Stud-button button-margin" *ngIf="showDatePicker" mat-fab extended color="primary" (click)="processExportLogtime()" [disabled]="!dateRange.valid">
+                    Send
+                </button>
+            </div>
             <p>Nombre d'actualisation restant {{ user!.strucCall.numberCall }} <br /></p>
             <p>dernière actualisation {{ user!.strucCall.date }} {{ user!.strucCall.time }}</p>
         </span>

@@ -100,7 +100,7 @@ html::after {
   width: auto !important;
 }
 
-button{
+.Stud-button{
   background-color: var(--Student-Hub-btn) !important;
   color: #6E6093;
   &hover{
@@ -222,7 +222,7 @@ a {
 }
 
 .mat-mdc-form-field .mat-mdc-floating-label.mdc-floating-label {
-  color: whitesmoke !important;
+  // color: whitesmoke !important;
   border-color: whitesmoke !important;
 }
 

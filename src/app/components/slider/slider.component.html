@@ -20,9 +20,14 @@
     </svg>
 </div>
 <div class="slider-div-button">
-    <button class="slider-div__button" mat-fab extended color="primary" (click)="swap()">Details</button>
-    <button class="slider-div__button" *ngIf="showButtonSave" mat-fab extended color="primary" (click)="processSave()" style="margin-left: 10px">Save</button>
+    <button class="slider-div__button Stud-button" mat-fab extended color="primary" (click)="swap()">Details</button>
+    <button class="slider-div__button Stud-button" *ngIf="showButtonSave" mat-fab extended color="primary" (click)="processSave()" style="margin-left: 10px">Save</button>
 </div>
 <div class="dots">
-    <button class="dot-button" (click)="slider!.moveToIdx(i)" *ngFor="let slide of dotHelper; let i = index" [class]="'dot ' + (i === currentSlide ? 'active' : '')"></button>
+    <button
+        class="dot-button Stud-button"
+        (click)="slider!.moveToIdx(i)"
+        *ngFor="let slide of dotHelper; let i = index"
+        [class]="'dot ' + (i === currentSlide ? 'active' : '')"
+    ></button>
 </div>
