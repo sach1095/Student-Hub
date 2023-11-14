@@ -8,6 +8,7 @@
             *ngFor="let day of week"
             [title]="day ? getHoursForDay(day) : ''"
             [ngClass]="{ 'has-hours': getHoursForDay(day!) !== '0H00' && getHoursForDay(day!) !== 'Pres : 0H00 | Dis: 0H00' }"
+            [ngStyle]="{ 'background-color': getBackgroundColor(getHoursForDay(day!)) }"
         >
             {{ day || "" }}
         </div>
