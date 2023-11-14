@@ -151,19 +151,23 @@ export class HomeComponent implements OnInit {
   }
 
   // Méthode à l'intérieur de votre service ou composant responsable de la gestion de oldTimeTotals
-  updateHeuresDistantiel(monthYear: string, dayFormatted: string, timeFormatted: string) {
-    if (this.currentMonthBeingProcessed !== monthYear) {
+  updateHeuresDistantiel(monthYear: string, dayFormatted: string, timeFormatted: string, resetDetailsDistentielle: boolean = false) {
+    if (this.currentMonthBeingProcessed !== monthYear || resetDetailsDistentielle) {
       this.currentMonthBeingProcessed = monthYear;
 
       if (!this.timeTotals[monthYear]) {
         this.timeTotals[monthYear] = {
           details: {},
+          detailsDistentielle: {},
           total: '',
           heuresAFaires: 0,
           heuresDistantiel: 0, // réinitialisé à 0 pour un nouveau mois
         };
       } else {
-        // Si l'entrée pour le mois existe déjà, réinitialisez juste heuresDistantiel
+        // Si l'entrée pour le mois existe déjà, réinitialisez heuresDistantiel et detailsDistentielle
+        if (resetDetailsDistentielle) {
+          this.timeTotals[monthYear].detailsDistentielle = {};
+        }
         this.timeTotals[monthYear].heuresDistantiel = 0;
       }
     }
@@ -176,12 +180,16 @@ export class HomeComponent implements OnInit {
     this.timeTotals[monthYear].heuresDistantiel = existingHeures + newHeures;
 
     // mettez à jour le total des heures pour ce mois
-    this.timeTotals[monthYear].details[dayFormatted] = timeFormatted;
+    // this.timeTotals[monthYear].details[dayFormatted] = timeFormatted;
+    this.timeTotals[monthYear].detailsDistentielle[dayFormatted] = timeFormatted;
   }
 
   async processTimeUpdates() {
+    let firstTime = true;
+
     for (const update of this.tempTimeUpdates) {
-      this.updateHeuresDistantiel(update.monthYear, update.dayFormatted, update.timeFormatted);
+      this.updateHeuresDistantiel(update.monthYear, update.dayFormatted, update.timeFormatted, firstTime);
+      firstTime = false;
     }
 
     // Après avoir traité toutes les mises à jour, mettez à jour l'utilisateur

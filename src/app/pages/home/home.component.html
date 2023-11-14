@@ -11,7 +11,7 @@
             <p>dernière actualisation {{ user!.strucCall.date }} {{ user!.strucCall.time }}</p>
         </span>
         <mat-error *ngIf="messageError !== ''">{{ messageError }}</mat-error>
-        <app-slider [timeTotals]="timeTotals" [timeByMonthKeys]="timeByMonthKeys"></app-slider>
+        <app-slider [timeTotals]="timeTotals" [timeByMonthKeys]="timeByMonthKeys" [isAlternant]="isAlternant"></app-slider>
     </div>
     <div id="spinner" *ngIf="!showButtonRefresh">
         <mat-spinner></mat-spinner>

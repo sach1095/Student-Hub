@@ -95,7 +95,7 @@ export class LogtimeUtils {
     // Mettre à jour l'objet oldTimeTotals avec les nouvelles données
     for (const yearMonth in newTimeTotals) {
       if (!oldTimeTotals[yearMonth]) {
-        oldTimeTotals[yearMonth] = { details: {}, total: '', heuresAFaires: 0, heuresDistantiel: 0 };
+        oldTimeTotals[yearMonth] = { details: {}, detailsDistentielle: {}, total: '', heuresAFaires: 0, heuresDistantiel: 0 };
       }
 
       for (const day in newTimeTotals[yearMonth].details) {
