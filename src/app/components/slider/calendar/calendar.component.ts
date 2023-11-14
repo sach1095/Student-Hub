@@ -1,5 +1,4 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { isNumber } from "firebase-admin/lib/utils/validator";
 
 @Component({
   selector: 'app-calendar',
@@ -67,17 +66,6 @@ export class CalendarComponent implements OnChanges {
     }
     return resultDetails;
   }
-
-  // getBackgroundColor(hours: string): string {
-  //   if (hours === '0H00') {
-  //     return `rgba(92, 38, 109, 0)`;
-  //   }
-  //   const parsedHours: string[] = hours.split('h');
-  //   const nbHours: number = +parsedHours[0];
-  //   const maxHours: number = 24;
-  //   const opacity = Math.min(nbHours / maxHours, 1);
-  //   return `rgba(92, 38, 109, ${opacity * 2})`;
-  // }
 
   getBackgroundColor(hours: string): string {
     if (hours === '0H00') {
