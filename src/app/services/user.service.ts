@@ -14,6 +14,7 @@ import { Location } from '@angular/common';
 export class UserService {
   private usersCollection = collection(this.firestore, 'users');
   private _loggedUser = new BehaviorSubject<User | null>(null);
+  private _initCompleted = new ReplaySubject<boolean>(1);
   private _userDatas: User | null = null;
 
   private _isSomethingChanged = new BehaviorSubject<boolean>(false);
@@ -21,8 +22,6 @@ export class UserService {
   get isSomethingChanged$(): Observable<boolean> {
     return this._isSomethingChanged.asObservable();
   }
-
-  private _initCompleted = new ReplaySubject<boolean>(1);
 
   get initCompleted$(): Observable<boolean> {
     return this._initCompleted.asObservable();
@@ -43,6 +42,7 @@ export class UserService {
       this._loggedUser.next(this._userDatas);
       this.setUserData(this._userDatas.id);
       this._initCompleted.next(true);
+      // this.router.navigate(['/home']);
     } else {
       this._initCompleted.next(false);
       this.router.navigate(['/login']);
@@ -60,6 +60,7 @@ export class UserService {
       }
       this._loggedUser.next(this._userDatas);
       await this.indexedDBService.saveUser(this._userDatas);
+      this._initCompleted.next(true);
       return this._userDatas;
     }
     return null;
@@ -142,6 +143,7 @@ export class UserService {
       );
       this._loggedUser.next(user);
       await this.indexedDBService.saveUser(user);
+      this._initCompleted.next(true);
     } catch (error) {
       console.error('User.service : createUser : ', error);
     }
