@@ -5,7 +5,7 @@
             <button class="Stud-button" mat-fab extended color="primary" (click)="processGetLogtime(false)">Refresh Logtime</button>
             <button class="Stud-button button-margin" *ngIf="!showDatePicker" mat-fab extended color="primary" (click)="showDateButton(true)">Export Logtime</button>
             <input type="file" (change)="onFileSelect($event)" id="file" style="display: none" />
-            <button class="Stud-button button-margin" mat-fab extended *ngIf="isAlternant" color="primary">
+            <button class="Stud-button button-margin" mat-fab extended *ngIf="user!.isAlternant" color="primary">
                 <label for="file" mat-raised-button color="primary">Importer Logtime Distanciel</label>
             </button>
             <div class="date-range-picker">
@@ -29,7 +29,7 @@
             <p>dernière actualisation {{ user!.strucCall.date }} {{ user!.strucCall.time }}</p>
         </span>
         <mat-error *ngIf="messageError !== ''">{{ messageError }}</mat-error>
-        <app-slider [timeTotals]="timeTotals" [timeByMonthKeys]="timeByMonthKeys" [isAlternant]="isAlternant"></app-slider>
+        <app-slider [timeTotals]="timeTotals" [timeByMonthKeys]="timeByMonthKeys" [isAlternant]="user!.isAlternant"></app-slider>
     </div>
     <div id="spinner" *ngIf="!showButtonRefresh">
         <mat-spinner></mat-spinner>

@@ -196,6 +196,9 @@ try {
         const { access_token } = temp;
         const dataResponse = await fetch(`https://api.intra.42.fr/v2/me?access_token=${access_token}`);
         // retour de l'objet response
+
+
+
         return await dataResponse.json();
       } catch (error) {
         throw new functions.https.HttpsError('internal', 'Failed to get User from API42, ' + error.message );

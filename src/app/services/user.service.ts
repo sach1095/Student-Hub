@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { deleteDoc, Firestore, getDoc, setDoc } from '@angular/fire/firestore';
+import { collectionData, deleteDoc, Firestore, getDoc, setDoc } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { collection, doc, updateDoc } from '@firebase/firestore';
 import { BehaviorSubject, firstValueFrom, Observable, ReplaySubject } from 'rxjs';
 import { ParamMapInterface, StrucCall, User } from 'src/app/models/users';
-import { StorageService } from './storage.service';
 import { IndexedDBService } from './indexed-db.service';
 import { Location } from '@angular/common';
 
@@ -38,7 +37,19 @@ export class UserService {
     // on App init : load user datas from storage if exists and redirect to home page
     const dbUser = await this.indexedDBService.getUser();
     if (dbUser) {
-      this._userDatas = new User(dbUser.id, dbUser.name, dbUser.login, dbUser.type, dbUser.urlImg, dbUser.wallet, dbUser.campus, dbUser.year, dbUser.strucCall, dbUser.paramMap);
+      this._userDatas = new User(
+        dbUser.id,
+        dbUser.name,
+        dbUser.login,
+        dbUser.type,
+        dbUser.urlImg,
+        dbUser.wallet,
+        dbUser.campus,
+        dbUser.year,
+        dbUser.strucCall,
+        dbUser.paramMap,
+        dbUser.isAlternant
+      );
       this._loggedUser.next(this._userDatas);
       this.setUserData(this._userDatas.id);
       this._initCompleted.next(true);
@@ -93,6 +104,7 @@ export class UserService {
           temp.get('campus'),
           temp.get('year'),
           temp.get('strucCall'),
+          temp.get('isAlternant'),
           paramMap
         );
         return user;
@@ -126,7 +138,10 @@ export class UserService {
       year: user.pool_year,
       strucCall: { date: '', time: '', numberCall: 6, lastSaveTime: '', lastSaveMonth: [] },
       paramMap: { size_h1: 2, size_h1_mobile: 2, size_poste: 5, size_poste_mobile: 2 },
+      isAlternant: false,
     };
+    let listAlternants = await this.getAlternants();
+    userdb.isAlternant = listAlternants.includes(user.login);
     try {
       await setDoc(doc(this.usersCollection, uid), userdb);
       const user = new User(
@@ -139,7 +154,8 @@ export class UserService {
         userdb.campus,
         userdb.year,
         new StrucCall(userdb.strucCall.date, userdb.strucCall.time, userdb.strucCall.numberCall, userdb.strucCall.lastSaveTime, userdb.strucCall.lastSaveMonth),
-        new ParamMapInterface(userdb.paramMap.size_h1, userdb.paramMap.size_h1_mobile, userdb.paramMap.size_poste, userdb.paramMap.size_poste_mobile)
+        new ParamMapInterface(userdb.paramMap.size_h1, userdb.paramMap.size_h1_mobile, userdb.paramMap.size_poste, userdb.paramMap.size_poste_mobile),
+        userdb.isAlternant
       );
       this._loggedUser.next(user);
       await this.indexedDBService.saveUser(user);
@@ -196,9 +212,6 @@ export class UserService {
 
       // mettez à jour le total des heures pour ce mois
       user.strucCall.lastSaveTime.timeTotals[monthYear].details[dayFormatted] = timeFormatted;
-
-      // sauvegardez les modifications apportées à oldTimeTotals où il est stocké
-      // this.setOldTimeTotals(oldTimeTotals);
     }
   }
 
@@ -210,7 +223,30 @@ export class UserService {
       console.error('User.service : delete : ', error);
     }
   }
+
+  public async getAlternants() {
+    try {
+      const docRef = doc(this.usersCollection, 'alternants');
+      const temp = await getDoc(docRef);
+      if (temp.exists()) {
+        const alternants = temp.get('listAlternants');
+        return alternants;
+      }
+      return null;
+    } catch (error: any) {
+      return null;
+    }
+  }
 }
+
+// public async getAllUsers() {
+//   let allUsers = await firstValueFrom(
+//     collectionData(this.usersCollection, {
+//       idField: 'id',
+//     }) as Observable<User[]>
+//   );
+//   return allUsers;
+// }
 
 // peut servire d'exemple pour faire des query sur firebase
 

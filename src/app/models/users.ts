@@ -40,6 +40,7 @@ export class User {
   public year: string;
   public strucCall: StrucCall;
   public paramMap: ParamMapInterface;
+  public isAlternant: boolean;
 
   constructor(
     id: string,
@@ -51,7 +52,8 @@ export class User {
     campus: string,
     year: string,
     strucCall: StrucCall,
-    paramMap: ParamMapInterface
+    paramMap: ParamMapInterface,
+    isAlternant: boolean
   ) {
     this.id = id;
     this.name = name;
@@ -63,5 +65,6 @@ export class User {
     this.year = year;
     this.strucCall = strucCall;
     this.paramMap = paramMap;
+    this.isAlternant = isAlternant;
   }
 }

@@ -28,7 +28,6 @@ export class HomeComponent implements OnInit {
   private today = new Date().toLocaleDateString();
   private tempTimeUpdates: any[] = [];
   private currentMonthBeingProcessed: string | null = null;
-  public isAlternant = false;
 
   public dateRange = this.formBuilder.group({
     start: [new FormControl<Date | null>(null), [Validators.required]],
@@ -39,7 +38,6 @@ export class HomeComponent implements OnInit {
 
   async ngOnInit() {
     await this.fetchLoggedUser();
-    if (this.user?.login === 'sbaranes') this.isAlternant = true;
     this.initialiseStoredApiCall();
     await this.handleGetLogtime();
   }
@@ -260,7 +258,7 @@ export class HomeComponent implements OnInit {
 
     let headers = [];
     // En-têtes des colonnes
-    if (!this.isAlternant) headers = ['Date', 'Logtime'];
+    if (!this.user!.isAlternant) headers = ['Date', 'Logtime'];
     else headers = ['Date', 'Logtime présentiel ', 'Logtime distanciel'];
 
     worksheet.addRow(headers);
@@ -270,13 +268,13 @@ export class HomeComponent implements OnInit {
       const yearMonth = formatDate(date, 'MM/yyyy', 'en-US');
       const day = formatDate(date, 'd', 'en-US');
       const logtime = logtimeData[yearMonth] && logtimeData[yearMonth].details[day] ? logtimeData[yearMonth].details[day] : '';
-      if (this.isAlternant)
+      if (this.user!.isAlternant)
         detailsDistentielle =
           logtimeData[yearMonth] && logtimeData[yearMonth].detailsDistentielle && logtimeData[yearMonth].detailsDistentielle[day] ? logtimeData[yearMonth].details[day] : '';
       const formattedDate = formatDate(date, 'yyyy-MM-dd', 'en-US');
 
       let rowData;
-      if (!this.isAlternant) rowData = [formattedDate, logtime];
+      if (!this.user!.isAlternant) rowData = [formattedDate, logtime];
       else rowData = [formattedDate, logtime, detailsDistentielle];
       worksheet.addRow(rowData);
     });
