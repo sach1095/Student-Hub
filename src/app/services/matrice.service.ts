@@ -4,6 +4,8 @@ import { collection, doc } from '@firebase/firestore';
 import { StorageService } from './storage.service';
 import { Matrice, UserMatrice } from '../models/matrice';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +13,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class UserMatriceService {
   private languageCollection = collection(this.firestore, 'matrice');
   private matrice?: Matrice;
-  private lastFetchTime?: Date;
+  private lastFetchTime?: Date | null = null;
   private posteListSubject = new BehaviorSubject<ElementRef[]>([]);
 
   constructor(private readonly firestore: Firestore, private storageService: StorageService) {}
@@ -19,35 +21,56 @@ export class UserMatriceService {
   private async fetchMatrice() {
     const docRef = doc(this.languageCollection, 'matriceData');
     const docSnap = await getDoc(docRef);
+
     if (!docSnap.exists()) {
       throw new Error('could not fetch users Connected');
     }
+
     let data = docSnap.data();
     this.matrice = JSON.parse(data['matriceData']);
-    this.lastFetchTime = new Date();
+    this.lastFetchTime = this.parseDate(data['lastFetchTime']);
+    this.storageService.saveLastTimeUpdate(data['lastFetchTime']);
+
     if (this.matrice) this.storageService.saveUsersMatrice(this.matrice);
     return this.matrice;
   }
 
   public async getUsers(): Promise<Matrice | undefined> {
-    if (!this.lastFetchTime || this.shouldRefetch(this.lastFetchTime)) {
-      return this.fetchMatrice();
+    const now = new Date();
+    let checkSave = this.storageService.getLastTimeUpdate();
+    if (checkSave) this.lastFetchTime = this.parseDate(checkSave);
+    // Vérifier si lastFetchTime est défini et si la différence de temps est supérieure à 5 minutes
+    if (!this.lastFetchTime || now.getTime() - this.lastFetchTime.getTime() > 5 * 60 * 1000) {
+      return await this.fetchMatrice();
     }
 
+    // Si les données sont récentes (moins de 5 minutes), utilisez les données stockées
     const storedUsersMatrice = this.storageService.getUsersMatrice();
     if (storedUsersMatrice) return storedUsersMatrice;
 
+    // Si aucune donnée stockée n'est disponible, rafraîchissez les données
     return this.fetchMatrice();
   }
 
-  private shouldRefetch(lastFetchTime: Date): boolean {
+  public async checkIfNeedReload() {
     const now = new Date();
-    const nextFetchMinute = Math.ceil(now.getMinutes() / 5) * 5 + 1; // Gets the next full 5th minute + 1
-    const nextFetchTime = new Date(now);
-    nextFetchTime.setMinutes(nextFetchMinute, 0, 0); // Sets next fetch time
 
-    // If last fetch time is before the next fetch time and current time is after the next fetch time, refetch.
-    return lastFetchTime < nextFetchTime && now >= nextFetchTime;
+    if (now.getTime() - this.lastFetchTime!.getTime() > 5 * 60 * 1000) {
+      // Rafraîchir les données si lastFetchTime est plus vieux que 5 minutes
+      const functions = getFunctions();
+      const refreshMatrice = httpsCallable(functions, 'refreshMatrice');
+      await refreshMatrice({ client_id: environment.CLIENT_ID, client_secret: environment.CLIENT_SECRET });
+
+      // Rafraîchir la matrice après l'attente
+      const docRef = doc(this.languageCollection, 'matriceData');
+      const updatedDocSnap = await getDoc(docRef);
+      if (updatedDocSnap.exists()) {
+        let updatedData = updatedDocSnap.data();
+        this.matrice = JSON.parse(updatedData['matriceData']);
+        this.lastFetchTime = new Date(JSON.parse(updatedData['lastFetchTime']));
+      }
+    }
+    return this.matrice;
   }
 
   // Permet aux composants de souscrire à la liste des postes
@@ -60,5 +83,14 @@ export class UserMatriceService {
     const currentPostes = this.posteListSubject.getValue();
     currentPostes.push(poste);
     this.posteListSubject.next(currentPostes);
+  }
+
+  private parseDate(dateStr: string) {
+    if (!dateStr) return new Date(1990, 0, 1, 1, 1, 1);
+    const [date, time] = dateStr.split(' ');
+    const [day, month, year] = date.split('/').map(Number);
+    const [hours, minutes, seconds] = time.split(':').map(Number);
+
+    return new Date(year, month - 1, day, hours, minutes, seconds);
   }
 }

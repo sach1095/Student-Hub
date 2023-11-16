@@ -48,10 +48,31 @@ export class MatriceComponent implements OnInit {
         });
       });
     }
+    this.checkReloadMaatriceInDb();
+    this.setUserPreferences();
   }
 
-  private async fetchLoggedUser() {
-    this.user = await firstValueFrom(this.userService.getLoggedUser());
+  async checkReloadMaatriceInDb() {
+    this.matrice = await this.userMatriceService.checkIfNeedReload();
+    this.userMatriceService.getPosteList().subscribe((postes) => {
+      this.postes = postes;
+    });
+    this.usersMatrice = [];
+    if (this.matrice) {
+      this.matrice.zones.forEach((zone) => {
+        zone.rangers.forEach((ranger) => {
+          ranger.postes.forEach((poste) => {
+            if (poste.user) {
+              this.usersMatrice!.push(poste.user);
+            }
+          });
+        });
+      });
+    }
+    this.setUserPreferences();
+  }
+
+  public setUserPreferences() {
     if (this.user?.paramMap) {
       document.documentElement.style.setProperty('--dynamic-size-h1', `${this.user?.paramMap.size_h1}rem`);
       document.documentElement.style.setProperty('--dynamic-size-h1-mobile', `${this.user?.paramMap.size_h1_mobile}rem`);
@@ -59,6 +80,10 @@ export class MatriceComponent implements OnInit {
       document.documentElement.style.setProperty('--dynamic-size-poste-mobile', `${this.user?.paramMap.size_poste_mobile}rem`);
       document.documentElement.style.setProperty('--dynamic-size-zone-h1', `${this.user?.paramMap.size_poste_mobile}rem`);
     }
+  }
+
+  private async fetchLoggedUser() {
+    this.user = await firstValueFrom(this.userService.getLoggedUser());
   }
 
   async fetchMatrice() {
