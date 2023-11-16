@@ -14,7 +14,7 @@ export class LoginComponent {
   public showError = false;
   public showSpinner = false;
   public messageError = '';
-  private DEBUGMODE = false;
+  private DEBUGMODE = true;
   constructor(private userService: UserService, private route: ActivatedRoute, private router: Router, private storageService: StorageService) {}
 
   async ngOnInit() {
@@ -29,7 +29,7 @@ export class LoginComponent {
   public async ProcessLogin() {
     if (!this.DEBUGMODE) this.OpenWindowOauth();
     else {
-      let id = '';
+      let id = '94593';
       let user = null;
       user = await this.userService.setUserData(id.toString());
       this.router.navigate(['/home']);

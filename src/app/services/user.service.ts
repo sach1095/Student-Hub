@@ -104,8 +104,8 @@ export class UserService {
           temp.get('campus'),
           temp.get('year'),
           temp.get('strucCall'),
-          temp.get('isAlternant'),
-          paramMap
+          paramMap,
+          temp.get('isAlternant')
         );
         return user;
       }
