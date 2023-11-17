@@ -63,7 +63,9 @@ export class HomeComponent implements OnInit {
       await this.updateTimeTotalsIfNeeded();
       this.checkIfCurrentMonthExsit();
       this.initialiseTimeByMonthKeys();
-      this.showButtonRefresh = true;
+      setTimeout(() => {
+        this.showButtonRefresh = true;
+      }, 1000);
     }
   }
 
@@ -101,7 +103,9 @@ export class HomeComponent implements OnInit {
       }
       this.user!.strucCall = this.storedApiCall;
       this.userService.updateUser();
-      this.showButtonRefresh = true;
+      setTimeout(() => {
+        this.showButtonRefresh = true;
+      }, 1000);
     }
   }
 
@@ -271,7 +275,7 @@ export class HomeComponent implements OnInit {
       if (this.user!.isAlternant)
         detailsDistentielle =
           logtimeData[yearMonth] && logtimeData[yearMonth].detailsDistentielle && logtimeData[yearMonth].detailsDistentielle[day] ? logtimeData[yearMonth].details[day] : '';
-      const formattedDate = formatDate(date, 'yyyy-MM-dd', 'en-US');
+      const formattedDate = formatDate(date, 'dd-MM-yyyy', 'fr-FR');
 
       let rowData;
       if (!this.user!.isAlternant) rowData = [formattedDate, logtime];
