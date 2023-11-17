@@ -1,10 +1,15 @@
 @use "sass:math";
 
+@import 'src/scss/breakpoints.scss';
+
 #edit-line{
   display: flex;
   align-items: center;
   justify-content: space-evenly;
   width: 115%;
+  @include for-mobile{
+    margin-top: 1rem;
+  }
 }
 
 $baseFontSize: 16;

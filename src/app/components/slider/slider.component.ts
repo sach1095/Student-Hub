@@ -26,7 +26,6 @@ export class SliderComponent implements OnChanges {
   gaugeComponents!: QueryList<GaugeComponent>;
   slider?: KeenSliderInstance;
   public showButtonSave = false;
-  public ShowCalendar = false;
 
   currentSlide: number = 1;
   dotHelper: Array<Number> = [];
@@ -55,10 +54,6 @@ export class SliderComponent implements OnChanges {
         };
       });
     }
-  }
-
-  swap() {
-    this.ShowCalendar = !this.ShowCalendar;
   }
 
   ngAfterViewInit() {

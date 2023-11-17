@@ -1,9 +1,13 @@
 <div class="keen-slider" #sliderRef>
     <div class="keen-slider__slide" *ngFor="let gaugeData of gaugeDataArray">
+        <p>{{ getMonthNameFromDate(gaugeData.month) }}</p>
         <div class="keen-slider__slide-div">
-            <p>{{ getMonthNameFromDate(gaugeData.month) }}</p>
-            <app-gauge *ngIf="!ShowCalendar" [timeTotals]="gaugeData.timeTotal" [month]="gaugeData.month"> </app-gauge>
-            <app-calendar *ngIf="ShowCalendar" [timeTotals]="gaugeData.timeTotal" [month]="gaugeData.month" [isAlternant]="isAlternant"></app-calendar>
+            <div class="keen-slider__slide-div__container">
+                <app-gauge [timeTotals]="gaugeData.timeTotal" [month]="gaugeData.month"> </app-gauge>
+            </div>
+            <div class="keen-slider__slide-div__container">
+                <app-calendar [timeTotals]="gaugeData.timeTotal" [month]="gaugeData.month" [isAlternant]="isAlternant"></app-calendar>
+            </div>
         </div>
     </div>
     <svg [ngClass]="'arrow arrow--left ' + (currentSlide === 0 ? 'arrow--disabled' : '')" (click)="slider!.prev()" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -20,7 +24,6 @@
     </svg>
 </div>
 <div class="slider-div-button">
-    <button class="slider-div__button Stud-button" mat-fab extended color="primary" (click)="swap()">Details</button>
     <button class="slider-div__button Stud-button" *ngIf="showButtonSave" mat-fab extended color="primary" (click)="processSave()" style="margin-left: 10px">Save</button>
 </div>
 <div class="dots">
