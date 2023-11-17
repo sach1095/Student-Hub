@@ -6,18 +6,9 @@ import { Matrice } from '../models/matrice';
   providedIn: 'root',
 })
 export class StorageService {
-  private _storageUserKey = 'user';
-  private _storageMatriceIndex = 'matriceIndex';
   private _lastTimeUpdate = 'lastTimeUpdate';
   private _storageUsersMatrice = 'usersIndex';
-
-  public getUser(): User | null {
-    const user = localStorage.getItem(this._storageUserKey);
-    return user ? JSON.parse(user) : null;
-  }
-  public saveUser(user: User) {
-    localStorage.setItem(this._storageUserKey, JSON.stringify(user));
-  }
+  private _storageMatriceIndex = 'matriceIndex';
 
   public getMatriceIndex(): number | null {
     const settins = localStorage.getItem(this._storageMatriceIndex);

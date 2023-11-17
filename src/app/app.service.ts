@@ -12,7 +12,8 @@ export class AppService {
   public async logOut() {
     await this.userService.resetUser();
     localStorage.removeItem('usersIndex');
-    localStorage.removeItem('usersIndex');
+    localStorage.removeItem('matriceIndex');
+    localStorage.removeItem('lastTimeUpdate');
     this.indexedDBService.closeDatabase();
     this.router.navigate(['/login']);
   }
