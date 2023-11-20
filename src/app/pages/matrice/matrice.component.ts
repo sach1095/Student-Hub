@@ -8,6 +8,7 @@ import { UserMatriceService } from 'src/app/services/matrice.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ParamMapComponent } from './param-map/param-map.component';
 import { ElementRef } from '@angular/core';
+import { setNonViablePostes } from 'src/app/models/unsetPost';
 
 @Component({
   selector: 'app-matrice',
@@ -32,7 +33,6 @@ export class MatriceComponent implements OnInit {
     await this.fetchLoggedUser();
     await this.fetchMatrice();
     this.selectedTabIndex = this.storageService.getMatriceIndex() || 0;
-    this.showMatrice = true;
     this.userMatriceService.getPosteList().subscribe((postes) => {
       this.postes = postes;
     });
@@ -48,28 +48,15 @@ export class MatriceComponent implements OnInit {
         });
       });
     }
+    this.showMatrice = true;
     this.checkReloadMaatriceInDb();
     this.setUserPreferences();
   }
 
   async checkReloadMaatriceInDb() {
-    this.matrice = await this.userMatriceService.checkIfNeedReload();
-    this.userMatriceService.getPosteList().subscribe((postes) => {
-      this.postes = postes;
-    });
-    this.usersMatrice = [];
-    if (this.matrice) {
-      this.matrice.zones.forEach((zone) => {
-        zone.rangers.forEach((ranger) => {
-          ranger.postes.forEach((poste) => {
-            if (poste.user) {
-              this.usersMatrice!.push(poste.user);
-            }
-          });
-        });
-      });
+    if (this.userMatriceService.checkIfNeedReload()) {
+      await this.userMatriceService.ReloadMatrice();
     }
-    this.setUserPreferences();
   }
 
   public setUserPreferences() {
@@ -88,6 +75,7 @@ export class MatriceComponent implements OnInit {
 
   async fetchMatrice() {
     this.matrice = await this.userMatriceService.getUsers();
+    if (this.matrice) setNonViablePostes(this.matrice);
   }
 
   public search(): void {

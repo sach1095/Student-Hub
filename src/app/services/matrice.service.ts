@@ -52,16 +52,24 @@ export class UserMatriceService {
     return this.fetchMatrice();
   }
 
-  public async checkIfNeedReload() {
+  public checkIfNeedReload(): boolean {
     const now = new Date();
 
     if (now.getTime() - this.lastFetchTime!.getTime() > 5 * 60 * 1000) {
-      // Rafraîchir les données si lastFetchTime est plus vieux que 5 minutes
-      const functions = getFunctions();
-      const refreshMatrice = httpsCallable(functions, 'refreshMatrice');
-      await refreshMatrice({ client_id: environment.CLIENT_ID, client_secret: environment.CLIENT_SECRET });
+      return true;
+    }
+    return false;
+  }
 
-      // Rafraîchir la matrice après l'attente
+  public async ReloadMatrice() {
+    console.log('Fetching new matrice ...');
+    // Rafraîchir les données si lastFetchTime est plus vieux que 5 minutes
+    const functions = getFunctions();
+    const refreshMatrice = httpsCallable(functions, 'refreshMatrice');
+    await refreshMatrice({ client_id: environment.CLIENT_ID, client_secret: environment.CLIENT_SECRET });
+
+    // Rafraîchir la matrice après l'attente
+    setTimeout(async () => {
       const docRef = doc(this.languageCollection, 'matriceData');
       const updatedDocSnap = await getDoc(docRef);
       if (updatedDocSnap.exists()) {
@@ -69,8 +77,9 @@ export class UserMatriceService {
         this.matrice = JSON.parse(updatedData['matriceData']);
         this.lastFetchTime = new Date(JSON.parse(updatedData['lastFetchTime']));
       }
-    }
-    return this.matrice;
+      if (this.matrice) this.storageService.saveUsersMatrice(this.matrice);
+    }, 20000);
+    window.location.reload();
   }
 
   // Permet aux composants de souscrire à la liste des postes

@@ -25,10 +25,15 @@
     background-position: center;
   }
 
-  .placeholder-image {
+  .placeholder-image-empty {
     width: 100%;
     height: 100%;
-    background-color: #3c3a3a;
+    background-color: whitesmoke;
+  }
+  .placeholder-image-no_available {
+    width: 100%;
+    height: 100%;
+    background-color: #353535bc;
   }
 }
 
@@ -41,7 +46,7 @@
 
 .tooltip-content {
   position: absolute;
-  z-index: 1001; // pour s'assurer qu'elle est au-dessus d'autres éléments
+  z-index: 1001;
 
   &.top-left {
     bottom: 100%;

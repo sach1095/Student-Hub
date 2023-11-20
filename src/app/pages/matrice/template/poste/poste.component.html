@@ -3,7 +3,8 @@
         <div class="poste-image">
             <div *ngIf="poste.user?.img; else noImage" [style.background-image]="'url(' + poste.user?.img + ')'" class="user-image"></div>
             <ng-template #noImage>
-                <div class="placeholder-image"></div>
+                <div *ngIf="!poste.viable" class="placeholder-image-no_available"></div>
+                <div *ngIf="poste.viable" class="placeholder-image-empty"></div>
             </ng-template>
         </div>
         <div class="poste-number">
