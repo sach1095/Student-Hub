@@ -6,6 +6,6 @@
     <small class="profile-user-handle">{{ poste.user?.displayName }}</small>
     <small class="profile-user-handle">{{ poste.user?.host }}</small>
     <div class="profile-actions">
-        <button class="Stud-button" mat-fab extended color="primary" (click)="navigateToUser()">Intra</button>
+        <button class="Stud-button" id="mousedown" mat-fab extended color="primary" (click)="navigateToUser()" (mousedown)="onMiddleClick($event)">Intra</button>
     </div>
 </article>

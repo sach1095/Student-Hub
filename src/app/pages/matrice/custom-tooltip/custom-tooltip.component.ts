@@ -15,4 +15,14 @@ export class CustomTooltipComponent {
     const url = `https://profile.intra.42.fr/users/${this.poste.user?.login}`;
     if (this.poste.user) window.open(url, '_blank');
   }
+
+  onMiddleClick(event: MouseEvent) {
+    console.log('onMiddleClick');
+    console.log(event.button);
+
+    if (event.button === 1) {
+      const url = `https://profile.intra.42.fr/users/${this.poste.user?.login}`;
+      if (this.poste.user) window.open(url, '_blank');
+    }
+  }
 }
