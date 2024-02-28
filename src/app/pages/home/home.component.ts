@@ -236,7 +236,7 @@ export class HomeComponent implements OnInit {
 
   private async exportLogtime(startDate: Date, endDate: Date, logtimeData: any) {
     const dates = this.getDatesBetween(startDate, endDate);
-    const fileName = `testCSVlogtime-${formatDate(startDate, 'dd-MM-yyyy', 'en-US')}-to-${formatDate(endDate, 'dd-MM-yyyy', 'en-US')}`;
+    const fileName = `CSVlogtime-${formatDate(startDate, 'dd-MM-yyyy', 'en-US')}-to-${formatDate(endDate, 'dd-MM-yyyy', 'en-US')}`;
     await this.generateCSVFile(dates, logtimeData, fileName);
     this.showDatePicker = false;
   }
