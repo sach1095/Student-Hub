@@ -143,7 +143,7 @@ export class HomeComponent implements OnInit {
     const allTextLines = csvData.split(/\r\n|\n/);
     for (const line of allTextLines) {
       // Exemple de ligne: "2023-10-09: ['1:19']"
-      const regex = /(\d{4}-\d{2}-\d{2}): \['(\d{1,2}):(\d{2})'\]/;
+      const regex = /(\d{4}-\d{2}-\d{2}): \['(\d{1,2}):(\d{1,2})'\]/;
       const match = line.match(regex);
 
       if (match) {
