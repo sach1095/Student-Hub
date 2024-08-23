@@ -53,13 +53,14 @@ export class UserMatriceService {
   }
 
   public checkIfNeedReload(): boolean {
-    const now = new Date();
-
-    if (now.getTime() - this.lastFetchTime!.getTime() > 5 * 60 * 1000) {
+    const lastFetchTime = this.lastFetchTime!;
+    const options = { timeZone: 'Europe/Paris' };
+    const now = new Date().toLocaleString('en-US', options);
+    if (new Date(now).getTime() - lastFetchTime.getTime() > 5 * 60 * 1000) {
       return true;
     }
     return false;
-  }
+}
 
   public async ReloadMatrice() {
     console.log('Fetching new matrice ...');
