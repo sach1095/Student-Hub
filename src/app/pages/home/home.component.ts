@@ -172,7 +172,7 @@ export class HomeComponent implements OnInit {
         this.timeTotals[monthYear] = {
           details: {},
           detailsDistentielle: {},
-          total: '',
+          total: '0h00',
           heuresAFaires: 0,
           heuresDistantiel: 0, // réinitialisé à 0 pour un nouveau mois
         };
@@ -189,7 +189,9 @@ export class HomeComponent implements OnInit {
     const timeParts = timeFormatted.split('h');
     const newHeures = parseInt(timeParts[0], 10) + parseInt(timeParts[1], 10) / 60; // convertit les heures et les minutes en une valeur décimale d'heures
     this.timeTotals[monthYear].heuresDistantiel = existingHeures + newHeures;
-
+    if (!this.timeTotals[monthYear].detailsDistentielle) {
+      this.timeTotals[monthYear].detailsDistentielle = {};
+    }
     this.timeTotals[monthYear].detailsDistentielle[dayFormatted] = timeFormatted;
   }
 
@@ -214,6 +216,8 @@ export class HomeComponent implements OnInit {
       lastSaveMonth: this.timeByMonthKeys,
     };
     this.user!.strucCall = this.storedApiCall;
+    console.log(this.storedApiCall);
+    console.log(this.user!.strucCall);
     await this.userService.updateUser();
     this.tempTimeUpdates = [];
   }

@@ -13,6 +13,7 @@ export class ParamMapInterface {
     this.size_poste_mobile = size_post_mobile;
   }
 }
+
 export class StrucCall {
   public date: string;
   public time: string;
